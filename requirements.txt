@@ -28,7 +28,6 @@ mdurl==0.1.2
 packaging==26.2
 prompt_toolkit==3.0.52
 psycopg==3.3.4
-psycopg2-binary==2.9.12
 Pygments==2.20.0
 pytailwindcss==0.3.1
 python-dateutil==2.9.0.post0
