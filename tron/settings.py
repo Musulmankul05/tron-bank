@@ -66,7 +66,7 @@ if DEBUG:
         ]
 
 
-ROOT_URLCONF = 'vantastic.urls'
+ROOT_URLCONF = 'tron.urls'
 
 TEMPLATES = [
     {
@@ -83,7 +83,7 @@ TEMPLATES = [
     },
 ]
 
-WSGI_APPLICATION = 'vantastic.wsgi.application'
+WSGI_APPLICATION = 'tron.wsgi.application'
 
 
 # Database
