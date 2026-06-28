@@ -9,7 +9,7 @@ class UserModel(AbstractUser):
         ("VER", "Verified"),
         ("REJ", "Rejected")
     )
-    kyc_status = models.CharField(max_length = 3, choices = STATUS, default="UNV", null=False)
-    phone = models.CharField(max_length=32, null=False, blank=False, unique=True)
-    date_birth = models.DateField(blank=False, null=False)
-    country = CountryField(null=False, blank=False)
+    kyc_status = models.CharField(max_length = 3, choices = STATUS, default="UNV")
+    phone = models.CharField(max_length=32)
+    date_birth = models.DateField()
+    country = CountryField()
