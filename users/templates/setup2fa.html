@@ -1,0 +1,78 @@
+{% load static tailwind_tags %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Enable Security — tron.bank</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600&family=Inter:wght@300;400&family=Space+Mono&display=swap" rel="stylesheet" />
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: { ink: '#0E1210', inkL: '#141A16', sage: '#22C55E', sageD: '#16A34A', paper: '#F2F0EA', mist: '#9CA39F', smoke: '#3D4A41' },
+                    fontFamily: { display: ['"Space Grotesk"', 'sans-serif'], body: ['Inter', 'sans-serif'], mono: ['"Space Mono"', 'monospace'] }
+                }
+            }
+        }
+    </script>
+    <style>
+        body { font-family: 'Inter', sans-serif; background: #0E1210; color: #F2F0EA; }
+        .input-focus:focus { border-color: rgba(34,197,94,0.4) !important; box-shadow: 0 0 0 1px rgba(34,197,94,0.15); }
+        /* Инверсия QR под темную тему */
+        #qrcode img { filter: invert(1) hue-rotate(180deg); margin: 0 auto; border-radius: 8px; border: 1px solid rgba(255,255,255,0.05); }
+    </style>
+</head>
+<body class="antialiased min-h-screen flex flex-col justify-center items-center px-6">
+
+    <div class="w-full max-w-[400px] bg-inkL border border-white/5 rounded-xl p-8 shadow-2xl relative text-center">
+        <div class="absolute top-0 left-1/2 -translate-x-1/2 w-48 h-48 bg-sage/5 rounded-full blur-3xl pointer-events-none"></div>
+
+        <div class="mb-6">
+            <span class="w-7 h-7 mx-auto rounded-md bg-sage flex items-center justify-center text-ink font-mono font-bold text-sm select-none mb-4">Ŧ</span>
+            <h1 class="font-display font-600 text-[22px] text-paper tracking-tight">Activate Protection</h1>
+            <p class="text-mist text-[13px] font-300 mt-1">Scan the QR code with Google Authenticator or any TOTP app.</p>
+        </div>
+
+        {% if error %}
+        <div class="font-mono text-[11px] text-red-500 bg-red-500/10 border border-red-500/20 rounded-md p-2.5 mb-4 text-left">
+            {{ error }}
+        </div>
+        {% endif %}
+
+        <div class="my-6 p-4 bg-ink rounded-lg inline-block w-full">
+            <div id="qrcode"></div>
+        </div>
+
+        <form method="POST" class="space-y-5 text-left">
+            {% csrf_token %}
+            <div>
+                <label for="otp_code" class="block font-mono text-[11px] text-mist uppercase tracking-wider mb-2 text-center">Verification Code</label>
+                <input 
+                    type="text" 
+                    id="otp_code" 
+                    name="otp_code" 
+                    maxlength="6" 
+                    required
+                    placeholder="000000" 
+                    class="input-focus w-full bg-ink border border-white/10 rounded-md px-4 py-3 text-[15px] text-paper placeholder:text-smoke font-mono tracking-[0.4em] text-center transition-all duration-150 outline-none"
+                />
+            </div>
+
+            <button type="submit" class="w-full bg-sage hover:bg-sageD text-ink text-[14px] font-display font-600 py-3 rounded-md transition-all duration-200">
+                Confirm & Authorize
+            </button>
+        </form>
+    </div>
+
+    <script>
+        new QRCode(document.getElementById("qrcode"), {
+            text: "{{ totp_uri }}",
+            width: 240,
+            height: 240,
+            correctLevel : QRCode.CorrectLevel.H
+        });
+    </script>
+</body>
+</html>
