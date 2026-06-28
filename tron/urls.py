@@ -20,7 +20,8 @@ from django.conf import settings
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('', include('wallets.urls'))
+    path('', include('wallets.urls', namespace='wallets')),
+    path('', include('users.urls', namespace='users')),
 ]
 
 if settings.DEBUG:

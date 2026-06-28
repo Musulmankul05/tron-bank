@@ -1,0 +1,140 @@
+{% load static tailwind_tags %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Sign In — tron.bank</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Inter:wght@300;400;500&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet" />
+    
+    <script>
+    tailwind.config = {
+    theme: {
+        extend: {
+        colors: {
+            ink:    '#0E1210',
+            inkL:   '#141A16',
+            inkLL:  '#1C2620',
+            sage:   '#22C55E',
+            sageD:  '#16A34A',
+            paper:  '#F2F0EA',
+            mist:   '#9CA39F',
+            smoke:  '#3D4A41',
+        },
+        fontFamily: {
+            display: ['"Space Grotesk"', 'sans-serif'],
+            body:    ['Inter', 'sans-serif'],
+            mono:    ['"Space Mono"', 'monospace'],
+        },
+        }
+    }
+    }
+    </script>
+    
+    <style>
+    body { font-family: 'Inter', sans-serif; background: #0E1210; color: #F2F0EA; }
+    .grid-bg {
+        background-image:
+        linear-gradient(rgba(34,197,94,0.015) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(34,197,94,0.015) 1px, transparent 1px);
+        background-size: 40px 40px;
+    }
+    .input-focus:focus {
+        border-color: rgba(34,197,94,0.4) !important;
+        box-shadow: 0 0 0 1px rgba(34,197,94,0.15);
+    }
+    .btn-glow:hover {
+        box-shadow: 0 0 0 1px rgba(34,197,94,0.4), 0 4px 20px rgba(34,197,94,0.12);
+    }
+    </style>
+</head>
+
+<body class="antialiased grid-bg min-h-screen flex flex-col justify-between">
+
+<header class="p-6 max-w-5xl w-full mx-auto">
+  <a href="{% url 'wallets:index' %}" class="inline-flex items-center gap-2.5 group w-fit">
+    <span class="w-7 h-7 rounded-md bg-sage flex items-center justify-center text-ink font-mono font-bold text-sm select-none"><</span>
+    <span class="font-display font-600 text-paper tracking-tight text-[15px]">go back</span>
+  </a>
+</header>
+
+<main class="w-full max-w-[400px] mx-auto px-6 py-12 flex-grow flex flex-col justify-center">
+  <div class="bg-inkL border border-white/5 rounded-xl p-8 shadow-2xl relative overflow-hidden">
+    <div class="absolute top-0 left-1/2 -translate-x-1/2 w-48 h-48 bg-sage/5 rounded-full blur-3xl pointer-events-none"></div>
+
+    <div class="mb-8">
+      <h1 class="font-display font-600 text-[24px] text-paper tracking-tight">Welcome back</h1>
+      <p class="text-mist text-[13px] font-300 mt-1">Enter your credentials to access your secure panel.</p>
+    </div>
+
+    <form method="POST" action="#" class="space-y-5">
+      {% csrf_token %} <div>
+        <label for="username" class="block font-mono text-[11px] text-mist uppercase tracking-wider mb-2">Phone</label>
+        <input 
+          type="text" 
+          id="username" 
+          name="username" 
+          required 
+          autocomplete="username"
+          placeholder="+996700010203" 
+          class="input-focus w-full bg-ink border border-white/10 rounded-md px-4 py-3 text-[14px] text-paper placeholder:text-smoke font-mono transition-all duration-150 outline-none"
+        />
+      </div>
+
+      <div>
+        <div class="flex justify-between items-center mb-2">
+          <label for="password" class="font-mono text-[11px] text-mist uppercase tracking-wider">Password</label>
+          <a href="#" class="font-mono text-[11px] text-smoke hover:text-sage transition-colors">Forgot?</a>
+        </div>
+        <input 
+          type="password" 
+          id="password" 
+          name="password" 
+          required 
+          autocomplete="current-password"
+          placeholder="••••••••••••" 
+          class="input-focus w-full bg-ink border border-white/10 rounded-md px-4 py-3 text-[14px] text-paper placeholder:text-smoke font-mono transition-all duration-150 outline-none"
+        />
+      </div>
+
+      <div class="flex items-center justify-between pt-1">
+        <label class="flex items-center gap-2.5 cursor-pointer select-none group">
+          <input type="checkbox" name="remember" class="sr-only peer" />
+          <div class="w-4 h-4 rounded border border-white/10 bg-ink flex items-center justify-center transition-all peer-checked:bg-sage peer-checked:border-sage">
+            <svg class="w-2.5 h-2.5 text-ink stroke-[3] hidden peer-checked:block" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M4.5 12.75l6 6 9-13.5" />
+            </svg>
+          </div>
+          <span class="text-[13px] text-mist group-hover:text-paper transition-colors font-300">Remember this device</span>
+        </label>
+      </div>
+
+      <div class="pt-2">
+        <button 
+          type="submit" 
+          class="btn-glow w-full bg-sage hover:bg-sageD text-ink text-[14px] font-display font-600 py-3 rounded-md transition-all duration-200 outline-none"
+        >
+          Authorize
+        </button>
+      </div>
+    </form>
+
+    <div class="mt-8 pt-6 border-t border-white/5 text-center">
+      <p class="text-[12px] text-smoke font-300">
+        Don't have an account? 
+        <a href="#" class="text-mist hover:text-sage font-400 transition-colors ml-1">Open one now</a>
+      </p>
+    </div>
+  </div>
+</main>
+
+<footer class="p-6 max-w-5xl w-full mx-auto flex justify-between items-center text-[11px] font-mono text-smoke">
+  <span>Secure Node Verified</span>
+  <span>tron.bank : 2026</span>
+</footer>
+
+</body>
+</html>
