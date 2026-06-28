@@ -143,6 +143,11 @@ STATICFILES_DIRS = [
     BASE_DIR / 'static'
 ]
 
+AUTHENTICATION_BACKENDS = [
+    'users.backends.PhoneAuthBackend',
+    'django.contrib.auth.backends.ModelBackend',
+]
+
 AUTH_USER_MODEL = "users.UserModel"
 
 # Default primary key field type

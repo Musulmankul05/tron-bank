@@ -72,14 +72,14 @@
 
     <form method="POST" action="#" class="space-y-5">
       {% csrf_token %} <div>
-        <label for="username" class="block font-mono text-[11px] text-mist uppercase tracking-wider mb-2">Phone</label>
+        <label for="phone" class="block font-mono text-[11px] text-mist uppercase tracking-wider mb-2">Phone</label>
         <input 
           type="text" 
-          id="username" 
+          id="phone" 
           name="username" 
           required 
-          autocomplete="username"
-          placeholder="+996700010203" 
+          autocomplete="tel"
+          placeholder="+996 (700) 010-203" 
           class="input-focus w-full bg-ink border border-white/10 rounded-md px-4 py-3 text-[14px] text-paper placeholder:text-smoke font-mono transition-all duration-150 outline-none"
         />
       </div>
