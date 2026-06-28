@@ -11,5 +11,10 @@ class UserModel(AbstractUser):
     )
     kyc_status = models.CharField(max_length = 3, choices = STATUS, default="UNV")
     phone = models.CharField(max_length=32)
+    is_phone_verified = models.BooleanField(default=False)
     date_birth = models.DateField()
     country = CountryField()
+
+class KYCModel(models.Model):
+    user = models.OneToOneField(UserModel, on_delete=models.CASCADE, related_name='user')
+    
