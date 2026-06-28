@@ -54,6 +54,11 @@
 
 <body class="antialiased grid-bg min-h-screen flex flex-col justify-between">
 
+    {% if error %}
+    <div class="font-mono text-[16px] text-red-500 bg-red-500/10 border border-red-500/20 rounded-md p-3 mb-4">
+        {{ error }}
+    </div>
+    {% endif %}
 <header class="p-6 max-w-5xl w-full mx-auto">
   <a href="{% url 'wallets:index' %}" class="inline-flex items-center gap-2.5 group w-fit">
     <span class="w-7 h-7 rounded-md bg-sage flex items-center justify-center text-ink font-mono font-bold text-sm select-none"><</span>
@@ -70,7 +75,7 @@
       <p class="text-mist text-[13px] font-300 mt-1">Enter your credentials to access your secure panel.</p>
     </div>
 
-    <form method="POST" action="#" class="space-y-5">
+    <form method="POST" class="space-y-5">
       {% csrf_token %} <div>
         <label for="phone" class="block font-mono text-[11px] text-mist uppercase tracking-wider mb-2">Phone</label>
         <input 

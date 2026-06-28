@@ -82,21 +82,24 @@
   <div class="max-w-5xl mx-auto px-6 h-16 flex items-center justify-between">
     <a href="#" class="flex items-center gap-2.5 group">
       <span class="w-7 h-7 rounded-md bg-sage flex items-center justify-center text-ink font-mono font-bold text-sm select-none">Ŧ</span>
-      <span class="font-display font-600 text-paper tracking-tight text-[15px]">tron<span class="text-sage">.</span>bank</span>
+      <span class="font-display font-600 text-paper tracking-tight text-[15px]">tron<span class="text-sage">.</span></span>
     </a>
 
     <div class="hidden sm:flex items-center gap-8">
       <a href="#features" class="text-[13px] text-mist hover:text-paper transition-colors">Features</a>
       <a href="#security" class="text-[13px] text-mist hover:text-paper transition-colors">Security</a>
+      <!--<a href="#about" class="text-[13px] text-mist hover:text-paper transition-colors">About Us</a>-->
     </div>
-
+    {% if user.is_authenticated %}
+    <a href="#" class="cta-glow text-[13px] font-display font-500 bg-sage text-ink px-4 py-2 rounded-md transition-all duration-200 hover:bg-sageD">
+    Open account
+    </a>
+    {% else %}
     <div class="flex items-center gap-3">
       <a href="{% url 'users:login' %}" class="text-[13px] font-display font-500 border-[1px] border-sage text-sage px-4 py-2 rounded-md transition-all duration-200 hover:bg-sageD hover:text-ink">
           Log in
       </a>
-      <a href="#" class="cta-glow text-[13px] font-display font-500 bg-sage text-ink px-4 py-2 rounded-md transition-all duration-200 hover:bg-sageD">
-        Open account
-      </a>
+      {% endif %}
     </div>
   </div>
 </nav>
@@ -141,7 +144,7 @@
             <div class="flex justify-between items-end">
               <div>
                 <p class="text-[8px] font-mono text-smoke uppercase tracking-wider">Holder</p>
-                <p class="text-[11px] font-mono text-paper tracking-wide">U. WANTTHIS</p>
+                <p class="text-[11px] font-mono text-paper tracking-wide">I. RICH</p>
               </div>
               <div class="w-6 h-4 bg-white/10 rounded-sm"></div>
             </div>
@@ -165,7 +168,7 @@
 
     <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
 
-      <div class="feature-card bg-inkL border border-white/6 rounded-xl p-6">
+      <div class="feature-card bg-inkL border border-white/30 rounded-xl p-6">
         <div class="w-9 h-9 rounded-lg bg-sage/10 border border-sage/15 flex items-center justify-center mb-4 text-sage">
           <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="20" height="14" x="2" y="5" rx="2"/><path d="M2 10h20"/></svg>
         </div>
@@ -173,7 +176,7 @@
         <p class="text-mist text-[13px] leading-relaxed font-300">Keep separate balances for KGS, KZT, and USD. Convert currencies instantly within your dashboard.</p>
       </div>
 
-      <div class="feature-card bg-inkL border border-white/6 rounded-xl p-6">
+      <div class="feature-card bg-inkL border border-white/30 rounded-xl p-6">
         <div class="w-9 h-9 rounded-lg bg-sage/10 border border-sage/15 flex items-center justify-center mb-4 text-sage">
           <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m5 12 7-7 7 7"/><path d="M12 19V5"/></svg>
         </div>
@@ -181,7 +184,7 @@
         <p class="text-mist text-[13px] leading-relaxed font-300">Send money to any phone number or account number across Central Asia without delays or hidden fees.</p>
       </div>
 
-      <div class="feature-card bg-inkL border border-white/6 rounded-xl p-6">
+      <div class="feature-card bg-inkL border border-white/30 rounded-xl p-6">
         <div class="w-9 h-9 rounded-lg bg-sage/10 border border-sage/15 flex items-center justify-center mb-4 text-sage">
           <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10"/></svg>
         </div>
@@ -225,7 +228,7 @@
   <div class="max-w-5xl mx-auto px-6 flex flex-col sm:flex-row items-center justify-between gap-4">
     <div class="flex items-center gap-2">
       <span class="w-5 h-5 rounded bg-sage flex items-center justify-center text-ink font-mono font-bold text-[10px]">Ŧ</span>
-      <span class="font-display font-500 text-paper/60 text-[13px]">tron.bank</span>
+      <span class="font-display font-500 text-paper/60 text-[13px]">tron.</span>
     </div>
     <div class="flex items-center gap-6 text-[12px] text-smoke">
       <span class="font-mono">By Musulmankul · MIT License</span>
