@@ -1,29 +1,14 @@
-{% load static tailwind_tags %}
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>Enable Security — tron.bank</title>
-    <script src="https://cdn.tailwindcss.com"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600&family=Inter:wght@300;400&family=Space+Mono&display=swap" rel="stylesheet" />
-    <script>
-        tailwind.config = {
-            theme: {
-                extend: {
-                    colors: { ink: '#0E1210', inkL: '#141A16', sage: '#22C55E', sageD: '#16A34A', paper: '#F2F0EA', mist: '#9CA39F', smoke: '#3D4A41' },
-                    fontFamily: { display: ['"Space Grotesk"', 'sans-serif'], body: ['Inter', 'sans-serif'], mono: ['"Space Mono"', 'monospace'] }
-                }
-            }
-        }
-    </script>
+{% extends 'base.html' %}
+{% block title %}Authentification setup | tron.{% endblock %}
+{% block styles %}
     <style>
         body { font-family: 'Inter', sans-serif; background: #0E1210; color: #F2F0EA; }
         .input-focus:focus { border-color: rgba(34,197,94,0.4) !important; box-shadow: 0 0 0 1px rgba(34,197,94,0.15); }
         /* Инверсия QR под темную тему */
         #qrcode img { filter: invert(1) hue-rotate(180deg); margin: 0 auto; border-radius: 8px; border: 1px solid rgba(255,255,255,0.05); }
     </style>
-</head>
+{% endblock %}
+{% block content %}
 <body class="antialiased min-h-screen flex flex-col justify-center items-center px-6">
 
     <div class="w-full max-w-[400px] bg-inkL border border-white/5 rounded-xl p-8 shadow-2xl relative text-center">
@@ -75,4 +60,4 @@
         });
     </script>
 </body>
-</html>
+{% endblock %}

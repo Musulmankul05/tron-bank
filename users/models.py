@@ -16,6 +16,10 @@ class UserModel(AbstractUser):
     totp_secret = models.CharField(max_length=32, blank=True, null=True)
     country = CountryField()
 
+class BackupCodesModel(models.Model):
+    user = models.ForeignKey(UserModel, on_delete=models.CASCADE, related_name='backups')
+    code = models.CharField(max_length=128, blank=True, null=True)
+
 class KYCModel(models.Model):
-    user = models.OneToOneField(UserModel, on_delete=models.CASCADE, related_name='user')
+    user = models.OneToOneField(UserModel, on_delete=models.CASCADE, related_name='kyc')
     

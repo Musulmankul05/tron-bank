@@ -1,0 +1,110 @@
+{% extends 'base.html' %}
+
+{% block title %}Backup Codes — tron.bank{% endblock %}
+
+{% block styles %}
+<style>
+    body { font-family: 'Inter', sans-serif; background: #0E1210; color: #F2F0EA; }
+    .code-grid-item {
+        background: rgba(255, 255, 255, 0.02);
+        border: 1px solid rgba(255, 255, 255, 0.05);
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<body class="antialiased min-h-screen flex flex-col justify-center items-center px-6">
+<header class="p-6 max-w-4xl w-full mx-auto">
+  <div class="flex items-center gap-2.5">
+    <span class="w-7 h-7 rounded-md bg-sage flex items-center justify-center text-ink font-mono font-bold text-sm select-none">Ŧ</span>
+    <span class="font-display font-600 text-paper tracking-tight text-[15px]">tron<span class="text-sage">.</span>bank</span>
+  </div>
+</header>
+
+<main class="w-full max-w-[500px] mx-auto px-6 py-8 flex-grow flex flex-col justify-center">
+  <div class="bg-inkL border border-white/5 rounded-xl p-8 shadow-2xl relative overflow-hidden">
+    <div class="absolute top-0 left-1/2 -translate-x-1/2 w-48 h-48 bg-sage/5 rounded-full blur-3xl pointer-events-none"></div>
+
+    <div class="mb-6">
+      <div class="inline-flex items-center gap-2 border border-red-500/20 bg-red-500/5 rounded-full px-3 py-1 mb-4">
+        <span class="w-1.5 h-1.5 rounded-full bg-red-500"></span>
+        <span class="font-mono text-[10px] text-red-400 tracking-widest uppercase">Action Required</span>
+      </div>
+      <h1 class="font-display font-600 text-[22px] text-paper tracking-tight">Save Recovery Codes</h1>
+      <p class="text-mist text-[13px] font-300 mt-1">
+        If you lose your 2FA device, these codes are the <span class="text-paper font-500">only way</span> to access your funds. Store them securely.
+      </p>
+    </div>
+
+    <div class="grid grid-cols-2 gap-3 my-6">
+      {% for code in codes %}
+      <div class="code-grid-item rounded-md px-4 py-3 text-center font-mono text-[20px] text-paper tracking-wider select-all">
+        {{ code }}
+      </div>
+      {% endfor %}
+    </div>
+
+    <div class="space-y-3 pt-2">
+      <button 
+        id="download-btn"
+        class="btn-glow w-full bg-sage hover:bg-sageD text-ink text-[14px] font-display font-600 py-3 rounded-md transition-all duration-200 outline-none flex items-center justify-center gap-2"
+      >
+        <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4 stroke-[2.5]" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M3 16.5v2.25A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75V16.5M16.5 12L12 16.5m0 0L7.5 12m4.5 4.5V3" />
+        </svg>
+        Download backup.txt
+      </button>
+
+      <a 
+        href="{% url 'wallets:index' %}" 
+        class="w-full border border-white/10 hover:border-white/20 text-center text-mist hover:text-paper text-[13px] font-display font-500 py-3 rounded-md transition-all duration-150 block"
+      >
+        I have saved them, proceed to node
+      </a>
+    </div>
+  </div>
+</main>
+
+<footer class="p-6 max-w-4xl w-full mx-auto text-center text-[11px] font-mono text-smoke">
+  <span>Do not share these recovery hashes with anyone.</span>
+</footer>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+document.getElementById('download-btn').addEventListener('click', function() {
+    // Собираем все коды со страницы динамически
+    const codeElements = document.querySelectorAll('.code-grid-item');
+    let codesText = "TRON.BANK — EMERGENCY RECOVERY CODES\n";
+    codesText += "Generated at: " + new Date().toISOString() + "\n";
+    codesText += "=========================================\n\n";
+    
+    codeElements.forEach((el, index) => {
+        const cleanCode = el.textContent.trim();
+        if (cleanCode && !cleanCode.includes('-35px')) { // Фильтр дефолтных строк, если пришел контекст джанго
+            codesText += `Code #${index + 1}: ${cleanCode}\n`;
+        }
+    });
+    
+    codesText += "\n=========================================\n";
+    codesText += "Keep this file offline on an encrypted volume.";
+
+    // Создаем блоб и триггерим системную загрузку файла браузером
+    const blob = new Blob([codesText], { type: 'text/plain;charset=utf-8;' });
+    const link = document.createElement("a");
+    
+    link.href = URL.createObjectURL(blob);
+    link.setAttribute("download", "tron_backup_codes.txt");
+    link.style.visibility = 'hidden';
+    
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+    window.addEventListener('beforeunload', function (e) {
+        e.preventDefault();
+        e.returnValue = '';
+    });
+});
+</script>
+</body>
+{% endblock %}
