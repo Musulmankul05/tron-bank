@@ -93,3 +93,6 @@ class TwoFactorVerifyView(View):
             return redirect('wallets:index')
         else:
             return render(request, 'verify2fa.html', {'error': 'Invalid verification code'})
+
+def registration_view(request):
+    return render(request, 'registration.html')

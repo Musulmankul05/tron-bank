@@ -1,40 +1,5 @@
-{% load static tailwind_tags %}
-<!DOCTYPE html>
-<html lang="en" class="scroll-smooth">
-<head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>tron Bank — Digital Finance for Central Asia</title>
-    <script src="https://cdn.tailwindcss.com"></script>
-    <link rel="preconnect" href="https://fonts.googleapis.com" />
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&family=Inter:wght@300;400;500&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet" />
-    
-    <script>
-    tailwind.config = {
-    theme: {
-        extend: {
-        colors: {
-            ink:    '#0E1210',
-            inkL:   '#141A16',
-            inkLL:  '#1C2620',
-            sage:   '#22C55E',
-            sageD:  '#16A34A',
-            sageLL: '#DCFCE7',
-            paper:  '#F2F0EA',
-            mist:   '#9CA39F',
-            smoke:  '#3D4A41',
-        },
-        fontFamily: {
-            display: ['"Space Grotesk"', 'sans-serif'],
-            body:    ['Inter', 'sans-serif'],
-            mono:    ['"Space Mono"', 'monospace'],
-        },
-        }
-    }
-    }
-    </script>
-    
+{% extends 'base.html' %}
+    {% block extra_style %}
     <style>
     html { background: #0E1210; }
     body { font-family: 'Inter', sans-serif; background: #0E1210; color: #F2F0EA; }
@@ -73,9 +38,9 @@
     /* Divider */
     .divider { border-color: rgba(255,255,255,0.06); }
     </style>
-    {% tailwind_css %}
-</head>
+    {% endblock %}
 
+{% block content %}
 <body class="antialiased">
 
 <nav class="fixed top-0 left-0 right-0 z-50 nav-blur border-b border-white/5 bg-ink/80">
@@ -93,7 +58,7 @@
     <div class="flex items-center gap-5">
         {% if user.is_authenticated %}
         <a href="#" class="cta-glow text-[13px] font-display font-500 bg-sage text-ink px-4 py-2 rounded-md transition-all duration-200 hover:bg-sageD">
-            Open account
+            Account
         </a>
         <form action="{% url 'users:logout' %}" method="POST" class="inline">
             {% csrf_token %}
@@ -104,6 +69,9 @@
         {% else %}
         <a href="{% url 'users:login' %}" class="text-[13px] font-display font-500 border border-sage/30 text-sage px-4 py-2 rounded-md transition-all duration-200 hover:bg-sageD hover:text-ink">
             Log in
+        </a>
+        <a href="{% url 'users:registration' %}" class="cta-glow text-[13px] font-display font-500 bg-sage text-ink px-4 py-2 rounded-md transition-all duration-200 hover:bg-sageD">
+            Open account
         </a>
         {% endif %}
     </div>
@@ -130,8 +98,8 @@
         </p>
 
         <div class="flex flex-wrap items-center justify-center md:justify-start gap-4">
-          <a href="#" class="cta-glow font-display font-600 text-[14px] bg-sage text-ink px-6 py-3 rounded-md transition-all duration-200 hover:bg-sageD">
-            Get started free
+          <a href="{% url 'users:registration' %}" class="cta-glow font-display font-600 text-[14px] bg-sage text-ink px-6 py-3 rounded-md transition-all duration-200 hover:bg-sageD">
+            Get your account for free
           </a>
         </div>
       </div>
@@ -233,14 +201,14 @@
 <footer class="border-t divider py-10 bg-ink">
   <div class="max-w-5xl mx-auto px-6 flex flex-col sm:flex-row items-center justify-between gap-4">
     <div class="flex items-center gap-2">
-      <span class="w-5 h-5 rounded bg-sage flex items-center justify-center text-ink font-mono font-bold text-[10px]">Ŧ</span>
-      <span class="font-display font-500 text-paper/60 text-[13px]">tron.</span>
+      <span class="w-9 h-9 rounded-lg bg-sage flex items-center justify-center text-ink font-mono font-bold text-[18px]">Ŧ</span>
+      <span class="font-display font-500 text-paper/60 text-[16px]">tron.</span>
     </div>
-    <div class="flex items-center gap-6 text-[12px] text-smoke">
+    <div class="flex items-center gap-6 text-[14px] text-smoke">
       <span class="font-mono">By Musulmankul · MIT License</span>
     </div>
   </div>
 </footer>
 
 </body>
-</html>
+{% endblock %}
