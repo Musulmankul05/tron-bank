@@ -69,11 +69,10 @@ class TwoFactorSetupView(View):
 
         if totp.verify(otp_code):
             login(request, user, backend='users.backends.PhoneAuthBackend')
-            del request.session['pre_auth_user_id']
-            if not user.backups.exists():
-                return redirect('users:backup-codes')
-            else:
-                return redirect('wallets:index')
+            request.session['allow_view_codes'] = True
+            if 'pre_auth_user_id' in request.session:
+                del request.session['pre_auth_user_id']
+            return redirect('users:backup-codes')
         else:
             user.totp_secret = None
             user.save()
@@ -110,13 +109,17 @@ class BackupCodeView(View):
     def get(self, request):
         if not request.user.is_authenticated:
             return redirect('users:login')
-        if request.user.backups.exists() or not request.session.get('allow_view_codes', False):
+        if request.user.backups.exists():
             return redirect('wallets:index')
+
+        if not request.session.get('allow_view_codes', False):
+            return redirect('wallets:index')
+            
         del request.session['allow_view_codes']
         backup_tokens = []
         backups_array = []
         start = time.perf_counter()
-        for _ in range(6):
+        for _ in range(4):
             raw_code = f"{secrets.randbelow(9000)+1000}-{secrets.randbelow(9000)+1000}"
             backup_tokens.append(raw_code)
 
@@ -136,5 +139,41 @@ class BackupCodeView(View):
         # Отдаем эти чистые raw_code юзеру на фронтенд только ОДИН раз, чтобы он их записал
         return render(request, 'backup_codes.html', {'codes': backup_tokens})
 
+class BackupEnterView(View):
+    def get(self, request):
+        if request.user.is_authenticated:
+            return redirect('wallets:index')
+        if 'pre_auth_user_id' not in request.session:
+            return redirect('users:login')
+        return render(request, 'enter_backup_codes.html')
+
+    def post(self, request):
+        if 'pre_auth_user_id' not in request.session:
+            return redirect('users:login')
+        user_id = request.session['pre_auth_user_id']
+        code = request.POST.get('otp_code', '').strip()
+        if not code:
+            return render(request, 'enter_backup_codes.html', {'error': 'Code is empty.'})
+            
+        hashed = hashlib.sha256(code.encode()).hexdigest()
+        backup_entry = BackupCodesModel.objects.filter(
+            user_id=user_id,
+            code=hashed
+        ).first()
+
+        if backup_entry:
+           backup_entry.delete()
+           management_user = BackupCodesModel._meta.get_field('user').remote_field.model 
+           user = management_user.objects.get(id=user_id)
+
+           login(request, user, backend='users.backends.PhoneAuthBackend')
+           request.user.backups.all().delete()
+           request.user.totp_secret = None
+           request.user.save()
+           del request.session['pre_auth_user_id']
+           return redirect('users:setup2fa')
+        else:
+            return render(request, 'enter_backup_codes.html', {'error': 'Incorrect code or already used.'})
+        
 def registration_view(request):
     return render(request, 'registration.html')

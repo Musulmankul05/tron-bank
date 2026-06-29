@@ -1,0 +1,89 @@
+{% extends 'base.html' %}
+
+{% block title %}Emergency Recovery | tron.bank{% endblock %}
+
+{% block styles %}
+<style>
+    body { font-family: 'Inter', sans-serif; background: #0E1210; color: #F2F0EA; }
+    .code-grid-item {
+        background: rgba(255, 255, 255, 0.02);
+        border: 1px solid rgba(255, 255, 255, 0.05);
+    }
+</style>
+{% endblock %}
+{% block content %}
+<body class="antialiased min-h-screen flex flex-col justify-center items-center px-6">
+<header class="p-6 max-w-4xl w-full mx-auto">
+  <div class="flex items-center gap-2.5">
+    <span class="w-7 h-7 rounded-md bg-sage flex items-center justify-center text-ink font-mono font-bold text-sm select-none">Ŧ</span>
+    <span class="font-display font-600 text-paper tracking-tight text-[15px]">tron<span class="text-sage">.</span>bank</span>
+  </div>
+</header>
+
+<main class="w-full max-w-[400px] mx-auto px-6 py-12 flex-grow flex flex-col justify-center">
+  <div class="bg-inkL border border-white/5 rounded-xl p-8 shadow-2xl relative overflow-hidden">
+    <div class="absolute top-0 left-1/2 -translate-x-1/2 w-48 h-48 bg-sage/5 rounded-full blur-3xl pointer-events-none"></div>
+
+    {% if error %}
+    <div class="font-mono text-[15px] text-red-500 bg-red-500/10 border border-red-500/20 rounded-md p-2.5 mb-4 text-left">
+        {{ error }}
+    </div>
+    {% endif %}
+    <div class="mb-6 text-center">
+      <h1 class="font-display font-600 text-[32px] text-paper tracking-tight">Emergency Access</h1>
+      <p class="text-mist text-[16px] font-300 mt-1">
+        Enter one of your 8-digit recovery codes to bypass 2FA protection.
+      </p>
+    </div>
+
+
+    <form method="POST" action="" class="space-y-5">
+      {% csrf_token %}
+      <div>
+        <label for="backup_code" class="block mt-8 font-mono text-[15px] text-mist uppercase tracking-wider mb-2 text-center">Recovery Code</label>
+        <input 
+          type="text" 
+          id="backup_code" 
+          name="otp_code" maxlength="9" 
+          required
+          placeholder="0000-0000" 
+          autocomplete="off"
+          class="input-focus w-full bg-ink border border-white/10 rounded-md px-4 py-3 text-[16px] text-paper placeholder:text-smoke font-mono tracking-[0.2em] text-center transition-all duration-150 outline-none uppercase"
+        />
+      </div>
+
+      <button type="submit" class="btn-glow w-full bg-sage hover:bg-sageD text-ink text-[18px] font-display font-600 py-3 rounded-md transition-all duration-200 outline-none">
+        Verify & Unlock Node
+      </button>
+    </form>
+
+    <div class="mt-6 pt-6 border-t border-white/5 text-center">
+      <p class="text-[12px] text-smoke font-300">
+        Found your device? 
+        <a href="{% url 'users:verify2fa' %}" class="text-mist hover:text-sage font-400 transition-colors ml-1">Use standard 2FA</a>
+      </p>
+    </div>
+  </div>
+</main>
+
+<footer class="p-6 max-w-4xl w-full mx-auto text-center text-[11px] font-mono text-smoke">
+  <span>Used recovery codes are automatically destroyed.</span>
+</footer>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+const codeInput = document.getElementById('backup_code');
+
+codeInput.addEventListener('input', function(e) {
+    let value = e.target.value.replace(/[^0-9]/g, '');
+    
+    if (value.length > 4) {
+        value = value.slice(0, 4) + '-' + value.slice(4, 8);
+    }
+    
+    e.target.value = value;
+});
+</script>
+</body>
+{% endblock %}

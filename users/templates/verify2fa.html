@@ -11,21 +11,31 @@
 {% block content %}
 <body class="antialiased min-h-screen flex flex-col justify-center items-center px-6">
     <div class="w-full max-w-[400px] bg-inkL border border-white/5 rounded-xl p-8 shadow-2xl relative text-center">
+        {% if error %}
+        <div class="font-mono text-[15px] text-red-500 bg-red-500/10 border border-red-500/20 rounded-md p-2.5 mb-4 text-left">
+            {{ error }}
+        </div>
+        {% endif %}
         <div class="mb-6">
             <span class="w-7 h-7 mx-auto rounded-md bg-sage flex items-center justify-center text-ink font-mono font-bold text-sm select-none mb-4">Ŧ</span>
-            <h1 class="font-display font-600 text-[22px] text-paper tracking-tight">Two-Factor Auth</h1>
-            <p class="text-mist text-[13px] font-300 mt-1">Open your authenticator app to view your security code.</p>
+            <h1 class="font-display font-600 text-[32px] text-paper tracking-tight">Two-Factor Auth</h1>
+            <p class="text-mist text-[18px] font-300 mt-2">Open your authenticator app to view your security code.</p>
         </div>
 
-        {% if error %} ... {% endif %}
 
-        <form method="POST" class="space-y-5 text-left">
+        <form method="POST" class="mt-8 space-y-5 text-left">
             {% csrf_token %}
             <div>
-                <label for="otp_code" class="block font-mono text-[11px] text-mist uppercase tracking-wider mb-2 text-center">Enter 6-Digit Code</label>
+                <label for="otp_code" class="block font-mono text-[13px] text-mist uppercase tracking-wider mb-2 text-center">Enter 6-Digit Code</label>
                 <input type="text" id="otp_code" name="otp_code" maxlength="6" required placeholder="000000" class="input-focus w-full bg-ink border border-white/10 rounded-md px-4 py-3 text-[15px] text-paper placeholder:text-smoke font-mono tracking-[0.4em] text-center transition-all duration-150 outline-none" />
             </div>
-            <button type="submit" class="w-full bg-sage hover:bg-sageD text-ink text-[14px] font-display font-600 py-3 rounded-md transition-all duration-200">Verify</button>
+            <button type="submit" class="w-full bg-sage hover:bg-sageD text-ink text-[18px] font-display font-600 py-3 rounded-md transition-all duration-200">Verify</button>
+            <div class="mt-6 pt-6 border-t border-white/5 text-center">
+              <p class="text-[12px] text-smoke font-300">
+                  If you lost your phone or authenticator, you can restore by your saved backup codes
+                <a href="{% url 'users:backup-enter' %}" class="text-mist hover:text-sage font-400 transition-colors ml-1">Here</a>
+              </p>
+            </div>
         </form>
     </div>
 </body>

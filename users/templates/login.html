@@ -22,12 +22,6 @@
 
 {% block content %}
 <body class="antialiased grid-bg min-h-screen flex flex-col justify-between">
-
-    {% if error %}
-    <div class="font-mono text-[16px] text-red-500 bg-red-500/10 border border-red-500/20 rounded-md p-3 mb-4">
-        {{ error }}
-    </div>
-    {% endif %}
 <header class="p-6 max-w-5xl w-full mx-auto">
   <a href="{% url 'wallets:index' %}" class="inline-flex items-center gap-2.5 group w-fit">
     <span class="w-7 h-7 rounded-md bg-sage flex items-center justify-center text-ink font-mono font-bold text-sm select-none"><</span>
@@ -39,14 +33,20 @@
   <div class="bg-inkL border border-white/5 rounded-xl p-8 shadow-2xl relative overflow-hidden">
     <div class="absolute top-0 left-1/2 -translate-x-1/2 w-48 h-48 bg-sage/5 rounded-full blur-3xl pointer-events-none"></div>
 
+    {% if error %}
+    <div class="font-mono text-[15px] text-red-500 bg-red-500/10 border border-red-500/20 rounded-md p-2.5 mb-4 text-left">
+        {{ error }}
+    </div>
+    {% endif %}
+    
     <div class="mb-8">
-      <h1 class="font-display font-600 text-[24px] text-paper tracking-tight">Welcome back</h1>
-      <p class="text-mist text-[13px] font-300 mt-1">Enter your credentials to access your secure panel.</p>
+      <h1 class="font-display font-600 text-[32px] text-paper tracking-tight">Welcome back</h1>
+      <p class="text-mist text-[18px] font-300 mt-1">Enter your credentials to access your secure panel.</p>
     </div>
 
     <form method="POST" class="space-y-5">
       {% csrf_token %} <div>
-        <label for="phone" class="block font-mono text-[11px] text-mist uppercase tracking-wider mb-2">Phone</label>
+        <label for="phone" class="block font-mono text-[13px] text-mist uppercase tracking-wider mb-2">Phone</label>
         <input 
           type="text" 
           id="phone" 
@@ -60,7 +60,7 @@
 
       <div>
         <div class="flex justify-between items-center mb-2">
-          <label for="password" class="font-mono text-[11px] text-mist uppercase tracking-wider">Password</label>
+          <label for="password" class="font-mono text-[13px] text-mist uppercase tracking-wider">Password</label>
           <a href="#" class="font-mono text-[11px] text-smoke hover:text-sage transition-colors">Forgot?</a>
         </div>
         <input 
@@ -82,14 +82,14 @@
               <path stroke-linecap="round" stroke-linejoin="round" d="M4.5 12.75l6 6 9-13.5" />
             </svg>
           </div>
-          <span class="text-[13px] text-mist group-hover:text-paper transition-colors font-300">Remember this device</span>
+          <span class="text-[16px] text-mist group-hover:text-paper transition-colors font-300">Remember this device</span>
         </label>
       </div>
 
       <div class="pt-2">
         <button 
           type="submit" 
-          class="btn-glow w-full bg-sage hover:bg-sageD text-ink text-[14px] font-display font-600 py-3 rounded-md transition-all duration-200 outline-none"
+          class="btn-glow w-full bg-sage hover:bg-sageD text-ink text-[18px] font-display font-600 py-3 rounded-md transition-all duration-200 outline-none"
         >
           Authorize
         </button>
@@ -97,7 +97,7 @@
     </form>
 
     <div class="mt-8 pt-6 border-t border-white/5 text-center">
-      <p class="text-[12px] text-smoke font-300">
+      <p class="text-[16px] text-smoke font-300">
         Don't have an account? 
         <a href="#" class="text-mist hover:text-sage font-400 transition-colors ml-1">Open one now</a>
       </p>
@@ -105,7 +105,7 @@
   </div>
 </main>
 
-<footer class="p-6 max-w-5xl w-full mx-auto flex justify-between items-center text-[11px] font-mono text-smoke">
+<footer class="p-6 max-w-5xl w-full mx-auto flex justify-between items-center text-[14px] font-mono text-smoke">
   <span>Secure Node Verified</span>
   <span>tron.bank : 2026</span>
 </footer>

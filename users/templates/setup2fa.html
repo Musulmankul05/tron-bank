@@ -13,18 +13,18 @@
 
     <div class="w-full max-w-[400px] bg-inkL border border-white/5 rounded-xl p-8 shadow-2xl relative text-center">
         <div class="absolute top-0 left-1/2 -translate-x-1/2 w-48 h-48 bg-sage/5 rounded-full blur-3xl pointer-events-none"></div>
-
-        <div class="mb-6">
-            <span class="w-7 h-7 mx-auto rounded-md bg-sage flex items-center justify-center text-ink font-mono font-bold text-sm select-none mb-4">Ŧ</span>
-            <h1 class="font-display font-600 text-[22px] text-paper tracking-tight">Activate Protection</h1>
-            <p class="text-mist text-[13px] font-300 mt-1">Scan the QR code with Google Authenticator or any TOTP app.</p>
-        </div>
-
         {% if error %}
-        <div class="font-mono text-[11px] text-red-500 bg-red-500/10 border border-red-500/20 rounded-md p-2.5 mb-4 text-left">
+        <div class="font-mono text-[13px] text-red-500 bg-red-500/10 border border-red-500/20 rounded-md p-2.5 mb-4 text-left">
             {{ error }}
         </div>
         {% endif %}
+
+        <div class="mb-6">
+            <span class="w-7 h-7 mx-auto rounded-md bg-sage flex items-center justify-center text-ink font-mono font-bold text-sm select-none mb-4">Ŧ</span>
+            <h1 class="font-display font-600 text-[32px] text-paper tracking-tight">Activate Protection</h1>
+            <p class="text-mist text-[18px] font-300 mt-1">Scan the QR code with Google Authenticator or any TOTP app.</p>
+        </div>
+
 
         <div class="my-6 p-4 bg-ink rounded-lg inline-block w-full">
             <div id="qrcode"></div>
@@ -33,7 +33,7 @@
         <form method="POST" class="space-y-5 text-left">
             {% csrf_token %}
             <div>
-                <label for="otp_code" class="block font-mono text-[11px] text-mist uppercase tracking-wider mb-2 text-center">Verification Code</label>
+                <label for="otp_code" class="block font-mono text-[13px] text-mist uppercase tracking-wider mb-2 text-center">Verification Code</label>
                 <input 
                     type="text" 
                     id="otp_code" 
@@ -45,17 +45,18 @@
                 />
             </div>
 
-            <button type="submit" class="w-full bg-sage hover:bg-sageD text-ink text-[14px] font-display font-600 py-3 rounded-md transition-all duration-200">
+            <button type="submit" class="w-full bg-sage hover:bg-sageD text-ink text-[18px] font-display font-600 py-3 rounded-md transition-all duration-200">
                 Confirm & Authorize
             </button>
         </form>
     </div>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
 
     <script>
         new QRCode(document.getElementById("qrcode"), {
             text: "{{ totp_uri }}",
-            width: 240,
-            height: 240,
+            width: 280,
+            height: 280,
             correctLevel : QRCode.CorrectLevel.H
         });
     </script>

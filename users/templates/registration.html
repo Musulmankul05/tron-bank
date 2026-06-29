@@ -32,6 +32,12 @@
 </header>
 
 <main class="w-full max-w-6xl mx-auto px-6 py-6 flex-grow grid grid-cols-1 lg:grid-cols-12 gap-12 items-center">
+
+    {% if error %}
+    <div class="font-mono text-[15px] text-red-500 bg-red-500/10 border border-red-500/20 rounded-md p-2.5 mb-4 text-left">
+        {{ error }}
+    </div>
+    {% endif %}
   
   <div class="lg:col-span-5 hidden lg:block space-y-8">
     <div class="space-y-4">
