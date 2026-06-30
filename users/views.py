@@ -2,7 +2,6 @@ from django.db import transaction
 from django.shortcuts import redirect, render
 from django.urls import reverse_lazy
 from django.views import View
-from coolname import generate
 from django.contrib.auth import authenticate, login, logout
 from .models import BackupCodesModel, KYCModel
 import hashlib

@@ -7,3 +7,7 @@ class IndexView(View):
         if request.user.is_authenticated and not getattr(request.user, 'totp_secret', None):
             return redirect('users:setup2fa')
         return render(request, 'index.html')
+
+class AccountView(View):
+    def get(self, request):
+        return render(request, 'account.html')
