@@ -1,0 +1,124 @@
+{% extends 'base.html' %}
+{% block title %}Step 2: KYC & Core Signature — tron.bank{% endblock %}
+{% block styles %}
+<style>
+body { font-family: 'Inter', sans-serif; background: #0E1210; color: #F2F0EA; }
+.grid-bg {
+    background-image:
+    linear-gradient(rgba(34,197,94,0.015) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(34,197,94,0.015) 1px, transparent 1px);
+    background-size: 40px 40px;
+}
+.input-focus:focus {
+    border-color: rgba(34,197,94,0.4) !important;
+    box-shadow: 0 0 0 1px rgba(34,197,94,0.15);
+}
+.btn-glow:hover {
+    box-shadow: 0 0 0 1px rgba(34,197,94,0.4), 0 4px 20px rgba(34,197,94,0.12);
+}
+</style>
+{% endblock %}
+{% block content %}
+<body class="antialiased grid-bg min-h-screen flex flex-col justify-between">
+<main class="w-full max-w-[490px] mx-auto px-6 py-12 flex-grow flex flex-col justify-center">
+  <div class="bg-inkL border border-white/5 rounded-xl p-8 shadow-2xl relative">
+    <div class="mb-6">
+      <a href="?step=1" class="text-[15px] font-mono text-smoke hover:text-sage transition-colors">← Back to credentials</a>
+      <span class="block font-mono text-[15px] text-sage tracking-widest uppercase mt-2">Step 02 / 02</span>
+      <h1 class="font-display font-600 text-[32px] text-paper tracking-tight mt-1">Regulatory Pipeline</h1>
+    </div>
+
+    <form method="POST" action="?step=2" class="space-y-4">
+      {% csrf_token %}
+      <div class="grid grid-cols-2 gap-4">
+        <div>
+          <label class="block font-mono text-[15px] text-mist uppercase mb-1.5">National ID / INN</label>
+          <input type="text" name="inn" required maxlength="14" placeholder="14-digit code" class="input-focus w-full bg-ink border border-white/10 rounded px-3 py-2 text-[13px] text-paper font-mono outline-none" />
+        </div>
+        <div>
+          <label class="block font-mono text-[15px] text-mist uppercase mb-1.5">Birth Date</label>
+          <input type="date" name="date_of_birth" required class="input-focus w-full bg-ink border border-white/10 rounded px-3 py-2 text-[13px] text-paper font-mono outline-none text-smoke" />
+        </div>
+      </div>
+
+      <div>
+        <label class="block font-mono text-[15px] text-mist uppercase mb-1.5">Legal Entity Node</label>
+        <select name="account_type" class="input-focus w-full bg-ink border border-white/10 rounded px-3 py-2 text-[13px] text-paper font-mono outline-none cursor-pointer">
+          <option value="private">Private Retail Node</option>
+          <option value="corporate">Corporate Merchant Node</option>
+        </select>
+      </div>
+
+      <div class="space-y-1.5">
+          <label class="block font-mono text-[15px] text-mist uppercase tracking-wider">Digital Signature Auth</label>
+          <div class="relative w-full h-36 bg-ink border border-white/10 rounded overflow-hidden">
+              <canvas id="signature-canvas" class="w-full h-full cursor-crosshair"></canvas>
+              <button type="button" id="clear-signature" class="absolute bottom-2 right-2 text-[12px] font-mono text-smoke hover:text-red-400 uppercase px-1.5 py-0.5 bg-inkL border border-white/5 rounded">Clear</button>
+          </div>
+          <input type="hidden" id="signature_svg_input" name="signature_svg">
+      </div>
+
+      <button type="submit" class="btn-glow w-full bg-sage hover:bg-sageD text-ink text-[16px] font-display font-600 py-2.5 rounded transition-all mt-4">
+        Initialize Encryption & Save
+      </button>
+    </form>
+  </div>
+</main>
+</body>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+const canvas = document.getElementById('signature-canvas');
+if(canvas) {
+    const ctx = canvas.getContext('2d');
+    const clearBtn = document.getElementById('clear-signature');
+    const svgInput = document.getElementById('signature_svg_input');
+
+    function resizeCanvas() {
+        canvas.width = canvas.offsetWidth;
+        canvas.height = canvas.offsetHeight;
+        ctx.strokeStyle = '#22C55E';
+        ctx.lineWidth = 2.5;
+        ctx.lineCap = 'round';
+        ctx.lineJoin = 'round';
+    }
+    window.addEventListener('resize', resizeCanvas);
+    resizeCanvas();
+
+    let isDrawing = false;
+    let svgPath = "";
+
+    function startDrawing(e) {
+        isDrawing = true;
+        const rect = canvas.getBoundingClientRect();
+        svgPath += `M ${(e.clientX - rect.left).toFixed(1)} ${(e.clientY - rect.top).toFixed(1)} `;
+    }
+
+    function draw(e) {
+        if (!isDrawing) return;
+        const rect = canvas.getBoundingClientRect();
+        const x = e.clientX - rect.left;
+        const y = e.clientY - rect.top;
+        ctx.lineTo(x, y);
+        ctx.stroke();
+        svgPath += `L ${x.toFixed(1)} ${y.toFixed(1)} `;
+    }
+
+    canvas.addEventListener('mousedown', (e) => { isDrawing = true; ctx.beginPath(); });
+    canvas.addEventListener('mousemove', draw);
+    window.addEventListener('mouseup', () => {
+        isDrawing = false;
+        if (svgPath.trim() !== "") {
+            svgInput.value = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 ${canvas.width} ${canvas.height}"><path d="${svgPath}" fill="none" stroke="#22C55E" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/></svg>`;
+        }
+    });
+
+    clearBtn.addEventListener('click', () => {
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+        svgPath = "";
+        svgInput.value = "";
+    });
+}
+</script>
+{% endblock %}

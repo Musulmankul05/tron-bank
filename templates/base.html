@@ -12,7 +12,6 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Inter:wght@300;400;500&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet" />
     
-    <!-- Глобальный конфиг Tailwind (Вынесли сюда один раз) -->
     <script>
     tailwind.config = {
         theme: {
@@ -37,13 +36,10 @@
     }
     </script>
     
-    <!-- Глобальные стили темы -->
-    
     {% block styles %}{% endblock %}
     {% tailwind_css %}
 </head>
     {% block content %}
-    <!-- Здесь будет контент конкретной страницы -->
     {% endblock %}
     {% block extra_js %}{% endblock %}
 </html>

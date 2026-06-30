@@ -1,8 +1,10 @@
+from django.db import transaction
 from django.shortcuts import redirect, render
+from django.urls import reverse_lazy
 from django.views import View
+from coolname import generate
 from django.contrib.auth import authenticate, login, logout
-from django.utils.crypto import get_random_string
-from .models import BackupCodesModel
+from .models import BackupCodesModel, KYCModel
 import hashlib
 import pyotp
 import time
@@ -175,5 +177,68 @@ class BackupEnterView(View):
         else:
             return render(request, 'enter_backup_codes.html', {'error': 'Incorrect code or already used.'})
         
-def registration_view(request):
-    return render(request, 'registration.html')
+class RegistrationView(View):
+    model = UserModel
+    success_url = reverse_lazy('users:login')
+    
+    def get(self, request):
+        if request.user.is_authenticated:
+            return redirect('wallets:index')
+
+        step = request.GET.get('step', '1')
+        if step == '2' and 'reg_step_1' not in request.session:
+            return redirect('users:registration')
+        template = 'registration_1.html' if step == '1' else 'registration_2.html'
+        return render(request, template)
+
+    def post(self, request):
+        step = request.GET.get('step', '1')
+
+        if step == '1':
+            data = {
+                'username': request.POST.get('username'),
+                'first_name': request.POST.get('first_name'),
+                'last_name': request.POST.get('last_name'),
+                'phone': request.POST.get('phone_number'),
+                'country': request.POST.get('country'),
+                'password1': request.POST.get('password')
+            }
+            password2 = request.POST.get('password_confirm')
+
+            if data['password1'] != password2:
+                return render(request, 'registration_1.html', {'error': 'Passwords do not match.'})
+
+            if UserModel.objects.filter(username=data['username']).exists():
+                return render(request, 'registration_1.html', {'error': 'User is already exists.'})
+                
+            request.session['reg_step_1'] = data
+            return redirect('/registration/?step=2')
+        elif step == '2':
+            step1_data = request.session.get('reg_step_1')
+            if not step1_data:
+                return redirect('users:registration')
+
+            inn = request.POST.get('inn')
+            date_birth = request.POST.get('date_of_birth')
+            account_type = request.POST.get('account_type')
+            signature_data = request.POST.get('signature_svg')
+
+            with transaction.atomic():
+                user = UserModel.objects.create_user(
+                    username=step1_data['username'],
+                    password=step1_data['password1'],
+                    first_name=step1_data['first_name'],
+                    last_name=step1_data['last_name'],
+                    country=step1_data['country'],
+                    phone=step1_data['phone'],
+                    date_birth=date_birth,
+                )
+                KYCModel.objects.create(
+                    user=user,
+                    inn=inn,
+                    account_type=account_type,
+                    signature_svg=signature_data,
+                )
+
+            del request.session['reg_step_1']
+            return redirect('users:login')

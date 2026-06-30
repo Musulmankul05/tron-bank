@@ -1,0 +1,85 @@
+{% extends 'base.html' %}
+{% block title %}Step 1: Access Node | tron.bank{% endblock %}
+{% block styles %}
+<style>
+body { font-family: 'Inter', sans-serif; background: #0E1210; color: #F2F0EA; }
+.grid-bg {
+    background-image:
+    linear-gradient(rgba(34,197,94,0.015) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(34,197,94,0.015) 1px, transparent 1px);
+    background-size: 40px 40px;
+}
+.input-focus:focus {
+    border-color: rgba(34,197,94,0.4) !important;
+    box-shadow: 0 0 0 1px rgba(34,197,94,0.15);
+}
+.btn-glow:hover {
+    box-shadow: 0 0 0 1px rgba(34,197,94,0.4), 0 4px 20px rgba(34,197,94,0.12);
+}
+</style>
+{% endblock %}
+{% block content %}
+<body class="antialiased grid-bg min-h-screen flex flex-col justify-between">
+<main class="w-full max-w-[490px] mx-auto px-6 py-12 flex-grow flex flex-col justify-center">
+  <div class="bg-inkL border border-white/5 rounded-xl p-8 shadow-2xl relative">
+    <div class="mb-6">
+      <span class="font-mono text-[15px] text-sage tracking-widest uppercase">Step 01 / 02</span>
+      <h1 class="font-display font-600 text-[32px] text-paper tracking-tight mt-1">Credentials Setup</h1>
+    </div>
+
+    {% if error %}
+    <div class="font-mono text-[16px] text-red-500 bg-red-500/10 border border-red-500/20 rounded p-2.5 mb-4">{{ error }}</div>
+    {% endif %}
+
+    <form method="POST" action="?step=1" class="space-y-4">
+      {% csrf_token %}
+      <div class="grid grid-cols-2 gap-4">
+        <div>
+          <label class="block font-mono text-[16px] text-mist uppercase mb-1.5">First Name</label>
+          <input type="text" name="first_name" required placeholder="Musulmankul" value="{{ data.first_name|default:'' }}" class="input-focus w-full bg-ink border border-white/10 rounded px-3 py-2 text-[16px] text-paper outline-none" />
+        </div>
+        <div>
+          <label class="block font-mono text-[16px] text-mist uppercase mb-1.5">Last Name</label>
+          <input type="text" name="last_name" required placeholder="Mamadiev" value="{{ data.last_name|default:'' }}" class="input-focus w-full bg-ink border border-white/10 rounded px-3 py-2 text-[16px] text-paper outline-none" />
+        </div>
+      </div>
+
+      <div>
+        <label class="block font-mono text-[16px] text-mist uppercase mb-1.5">System Username</label>
+        <input type="text" name="username" required placeholder="musulmankul" value="{{ data.username|default:'' }}" class="input-focus w-full bg-ink border border-white/10 rounded px-3 py-2 text-[16px] text-paper font-mono outline-none" />
+      </div>
+
+      <div class="grid grid-cols-2 gap-4">
+        <div>
+          <label class="block font-mono text-[16px] text-mist uppercase mb-1.5">Phone</label>
+          <input type="tel" name="phone_number" required placeholder="+996..." value="{{ data.phone_number|default:'' }}" class="input-focus w-full bg-ink border border-white/10 rounded px-3 py-2 text-[16px] text-paper font-mono outline-none" />
+        </div>
+        <div>
+          <label class="block font-mono text-[16px] text-mist uppercase mb-1.5">Country</label>
+          <select name="base_country" class="input-focus w-full bg-ink border border-white/10 rounded px-3 py-2 text-[18px] text-paper font-mono outline-none cursor-pointer">
+            <option value="KG">Kyrgyzstan</option>
+            <option value="RU">Russia</option>
+            <option value="KZ">Kazakhstan</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="grid grid-cols-2 gap-4">
+        <div>
+          <label class="block font-mono text-[16px] text-mist uppercase mb-1.5">Password</label>
+          <input type="password" name="password" required placeholder="••••••••" class="input-focus w-full bg-ink border border-white/10 rounded px-3 py-2 text-[16px] text-paper font-mono outline-none" />
+        </div>
+        <div>
+          <label class="block font-mono text-[16px] text-mist uppercase mb-1.5">Confirm</label>
+          <input type="password" name="password_confirm" required placeholder="••••••••" class="input-focus w-full bg-ink border border-white/10 rounded px-3 py-2 text-[16px] text-paper font-mono outline-none" />
+        </div>
+      </div>
+
+      <button type="submit" class="btn-glow w-full bg-sage hover:bg-sageD text-ink text-[16px] font-display font-600 py-2.5 rounded transition-all mt-2">
+        Continue to KYC Validation →
+    </button>
+    </form>
+  </div>
+</main>
+</body>
+{% endblock %}
