@@ -144,6 +144,8 @@ STATICFILES_DIRS = [
     BASE_DIR / 'static'
 ]
 
+SIGNATURE_CRYPTO_KEY = os.getenv('SIGNATURE_CRYPTO_KEY')
+
 AUTHENTICATION_BACKENDS = [
     'users.backends.PhoneAuthBackend',
     'django.contrib.auth.backends.ModelBackend',

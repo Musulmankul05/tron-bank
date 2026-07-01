@@ -1,3 +1,4 @@
+from django.conf import settings
 from django.db import transaction
 from django.shortcuts import redirect, render
 from django.urls import reverse_lazy
@@ -220,7 +221,7 @@ class RegistrationView(View):
             date_birth = request.POST.get('date_of_birth')
             account_type = request.POST.get('account_type')
 
-            cipher = Fernet(b'NEPjFz_cLg58n-EAQeUE4Pv_wzUjxWcbLa4gUzAaZJg=')
+            cipher = Fernet(settings.SIGNATURE_CRYPTO_KEY)
             raw_png_str = request.POST.get('signature_svg')
             encrypted_png = cipher.encrypt(raw_png_str.encode('utf-8'))
 
