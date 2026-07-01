@@ -6,7 +6,6 @@ from django.contrib.auth import authenticate, login, logout
 from .models import BackupCodesModel, KYCModel
 import hashlib
 import pyotp
-import time
 import secrets
 
 from users.models import UserModel
@@ -119,7 +118,6 @@ class BackupCodeView(View):
         del request.session['allow_view_codes']
         backup_tokens = []
         backups_array = []
-        start = time.perf_counter()
         for _ in range(4):
             raw_code = f"{secrets.randbelow(9000)+1000}-{secrets.randbelow(9000)+1000}"
             backup_tokens.append(raw_code)
@@ -134,7 +132,6 @@ class BackupCodeView(View):
             backups_array, update_conflicts=True, 
             unique_fields=['id'], update_fields=['user', 'code']
         )
-        print(time.perf_counter() -start)
         request.session['codes_generated'] = True
         
         # Отдаем эти чистые raw_code юзеру на фронтенд только ОДИН раз, чтобы он их записал
@@ -213,6 +210,8 @@ class RegistrationView(View):
             request.session['reg_step_1'] = data
             return redirect('/registration/?step=2')
         elif step == '2':
+            from cryptography.fernet import Fernet
+            
             step1_data = request.session.get('reg_step_1')
             if not step1_data:
                 return redirect('users:registration')
@@ -220,7 +219,10 @@ class RegistrationView(View):
             inn = request.POST.get('inn')
             date_birth = request.POST.get('date_of_birth')
             account_type = request.POST.get('account_type')
-            signature_data = request.POST.get('signature_svg')
+
+            cipher = Fernet(b'NEPjFz_cLg58n-EAQeUE4Pv_wzUjxWcbLa4gUzAaZJg=')
+            raw_png_str = request.POST.get('signature_svg')
+            encrypted_png = cipher.encrypt(raw_png_str.encode('utf-8'))
 
             with transaction.atomic():
                 user = UserModel.objects.create_user(
@@ -236,7 +238,7 @@ class RegistrationView(View):
                     user=user,
                     inn=inn,
                     account_type=account_type,
-                    signature_svg=signature_data,
+                    signature_svg=encrypted_png.decode('utf-8'),
                 )
 
             del request.session['reg_step_1']

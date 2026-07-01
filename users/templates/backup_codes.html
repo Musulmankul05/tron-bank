@@ -13,61 +13,64 @@
 {% endblock %}
 
 {% block content %}
-<body class="antialiased min-h-screen flex flex-col justify-center items-center px-6">
-<header class="p-6 max-w-4xl w-full mx-auto">
-  <div class="flex items-center gap-2.5">
-    <span class="w-7 h-7 rounded-md bg-sage flex items-center justify-center text-ink font-mono font-bold text-sm select-none">Ŧ</span>
-    <span class="font-display font-600 text-paper tracking-tight text-[15px]">tron<span class="text-sage">.</span>bank</span>
-  </div>
-</header>
+<body class="antialiased min-h-screen flex flex-col justify-between items-center px-4 sm:px-6 bg-ink text-paper">
+  
+  <header class="p-4 sm:p-6 max-w-4xl w-full mx-auto flex-shrink-0">
+    <div class="flex items-center gap-2.5">
+      <span class="w-7 h-7 rounded-md bg-sage flex items-center justify-center text-ink font-mono font-bold text-sm select-none">Ŧ</span>
+      <span class="font-display font-600 text-paper tracking-tight text-[15px]">tron<span class="text-sage">.</span>bank</span>
+    </div>
+  </header>
 
-<main class="w-full max-w-[600px] mx-auto px-14 py-8 flex-grow flex flex-col justify-center">
-  <div class="bg-inkL border border-white/5 rounded-xl p-8 shadow-2xl relative overflow-hidden">
-    <div class="absolute top-0 left-1/2 -translate-x-1/2 w-48 h-48 bg-sage/5 rounded-full blur-3xl pointer-events-none"></div>
+  <main class="w-full max-w-[600px] mx-auto py-4 sm:py-8 flex-grow flex flex-col justify-center">
+    <div class="bg-inkL border border-white/5 rounded-xl p-5 sm:p-12 shadow-2xl relative overflow-hidden">
+      <div class="absolute top-0 left-1/2 -translate-x-1/2 w-48 h-48 bg-sage/5 rounded-full blur-3xl pointer-events-none"></div>
 
-    <div class="mb-6">
-      <div class="inline-flex items-center gap-2 border border-red-500/20 bg-red-500/5 rounded-full px-3 py-1 mb-4">
-        <span class="w-1.5 h-1.5 rounded-full bg-red-500"></span>
-        <span class="font-mono text-[10px] text-red-400 tracking-widest uppercase">Action Required</span>
+      <div class="mb-6">
+        <div class="inline-flex items-center gap-2 border border-red-500/20 bg-red-500/5 rounded-full px-3 py-1 mb-4">
+          <span class="w-1.5 h-1.5 rounded-full bg-red-500"></span>
+          <span class="font-mono text-[10px] text-red-400 tracking-widest uppercase">Action Required</span>
+        </div>
+        <h1 class="font-display font-600 text-[22px] sm:text-[24px] text-paper tracking-tight">Save Recovery Codes</h1>
+        <p class="text-mist text-[13px] font-300 mt-2 leading-relaxed">
+          If you lose your 2FA device, these codes are the <span class="text-paper font-500">only way</span> to access your funds. Store them securely.
+        </p>
       </div>
-      <h1 class="font-display font-600 text-[22px] text-paper tracking-tight">Save Recovery Codes</h1>
-      <p class="text-mist text-[13px] font-300 mt-1">
-        If you lose your 2FA device, these codes are the <span class="text-paper font-500">only way</span> to access your funds. Store them securely.
-      </p>
-    </div>
 
-    <div class="grid grid-cols-2 gap-3 my-6">
-      {% for code in codes %}
-      <div class="code-grid-item rounded-md px-4 py-3 text-center font-mono text-[22px] text-paper tracking-wider select-all">
-        {{ code }}
+      <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 my-6">
+        {% for code in codes %}
+        <div class="code-grid-item bg-ink border border-white/5 rounded-md px-4 py-3 text-center font-mono text-[18px] sm:text-[22px] text-paper tracking-wider select-all">
+          {{ code }}
+        </div>
+        {% endfor %}
       </div>
-      {% endfor %}
+
+      <div class="space-y-3 pt-2">
+        <button 
+          id="download-btn"
+          class="btn-glow w-full bg-sage hover:bg-sageD text-ink text-[14px] font-display font-600 py-3.5 rounded-md transition-all duration-200 outline-none flex items-center justify-center gap-2 cursor-pointer"
+        >
+          <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4 stroke-[2.5]" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M3 16.5v2.25A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75V16.5M16.5 12L12 16.5m0 0L7.5 12m4.5 4.5V3" />
+          </svg>
+          Download backup.txt
+        </button>
+
+        <a 
+          href="{% url 'wallets:index' %}" 
+          class="w-full border border-white/10 hover:border-white/20 text-center text-mist hover:text-paper text-[13px] font-display font-500 py-3.5 rounded-md transition-all duration-150 block"
+        >
+          I have saved them, proceed to node
+        </a>
+      </div>
     </div>
+  </main>
 
-    <div class="space-y-3 pt-2">
-      <button 
-        id="download-btn"
-        class="btn-glow w-full bg-sage hover:bg-sageD text-ink text-[14px] font-display font-600 py-3 rounded-md transition-all duration-200 outline-none flex items-center justify-center gap-2"
-      >
-        <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4 stroke-[2.5]" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-          <path stroke-linecap="round" stroke-linejoin="round" d="M3 16.5v2.25A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75V16.5M16.5 12L12 16.5m0 0L7.5 12m4.5 4.5V3" />
-        </svg>
-        Download backup.txt
-      </button>
+  <footer class="p-4 sm:p-6 max-w-4xl w-full mx-auto text-center text-[11px] font-mono text-smoke flex-shrink-0">
+    <span>Do not share these recovery hashes with anyone.</span>
+  </footer>
 
-      <a 
-        href="{% url 'wallets:index' %}" 
-        class="w-full border border-white/10 hover:border-white/20 text-center text-mist hover:text-paper text-[13px] font-display font-500 py-3 rounded-md transition-all duration-150 block"
-      >
-        I have saved them, proceed to node
-      </a>
-    </div>
-  </div>
-</main>
-
-<footer class="p-6 max-w-4xl w-full mx-auto text-center text-[11px] font-mono text-smoke">
-  <span>Do not share these recovery hashes with anyone.</span>
-</footer>
+</body>
 {% endblock %}
 
 {% block extra_js %}

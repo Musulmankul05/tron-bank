@@ -36,23 +36,23 @@ body { font-family: 'Inter', sans-serif; background: #0E1210; color: #F2F0EA; }
       <div class="grid grid-cols-2 gap-4">
         <div>
           <label class="block font-mono text-[16px] text-mist uppercase mb-1.5">First Name</label>
-          <input type="text" name="first_name" required placeholder="Musulmankul" value="{{ data.first_name|default:'' }}" class="input-focus w-full bg-ink border border-white/10 rounded px-3 py-2 text-[16px] text-paper outline-none" />
+          <input type="text" name="first_name" required value="{{ data.first_name|default:'' }}" class="input-focus w-full bg-ink border border-white/10 rounded px-3 py-2 text-[16px] text-paper outline-none" />
         </div>
         <div>
           <label class="block font-mono text-[16px] text-mist uppercase mb-1.5">Last Name</label>
-          <input type="text" name="last_name" required placeholder="Mamadiev" value="{{ data.last_name|default:'' }}" class="input-focus w-full bg-ink border border-white/10 rounded px-3 py-2 text-[16px] text-paper outline-none" />
+          <input type="text" name="last_name" required value="{{ data.last_name|default:'' }}" class="input-focus w-full bg-ink border border-white/10 rounded px-3 py-2 text-[16px] text-paper outline-none" />
         </div>
       </div>
 
       <div>
         <label class="block font-mono text-[16px] text-mist uppercase mb-1.5">System Username</label>
-        <input type="text" name="username" required placeholder="musulmankul" value="{{ data.username|default:'' }}" class="input-focus w-full bg-ink border border-white/10 rounded px-3 py-2 text-[16px] text-paper font-mono outline-none" />
+        <input type="text" name="username" required value="{{ data.username|default:'' }}" class="input-focus w-full bg-ink border border-white/10 rounded px-3 py-2 text-[16px] text-paper font-mono outline-none" />
       </div>
 
       <div class="grid grid-cols-2 gap-4">
         <div>
           <label class="block font-mono text-[16px] text-mist uppercase mb-1.5">Phone</label>
-          <input type="tel" name="phone_number" required placeholder="+996..." value="{{ data.phone_number|default:'' }}" class="input-focus w-full bg-ink border border-white/10 rounded px-3 py-2 text-[16px] text-paper font-mono outline-none" />
+          <input type="tel" name="phone_number" required placeholder="+996700123456" value="{{ data.phone_number|default:'' }}" class="input-focus w-full bg-ink border border-white/10 rounded px-3 py-2 text-[16px] text-paper font-mono outline-none" />
         </div>
         <div>
           <label class="block font-mono text-[16px] text-mist uppercase mb-1.5">Country</label>
