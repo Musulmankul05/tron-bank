@@ -73,7 +73,8 @@ const canvas = document.getElementById('signature-canvas');
 if(canvas) {
     const ctx = canvas.getContext('2d');
     const clearBtn = document.getElementById('clear-signature');
-    const svgInput = document.getElementById('signature_svg_input');
+    // Имя переменной и ID инпута меняем под PNG контент для ясности
+    const pngInput = document.getElementById('signature_svg_input'); 
 
     function resizeCanvas() {
         canvas.width = canvas.offsetWidth;
@@ -87,37 +88,68 @@ if(canvas) {
     resizeCanvas();
 
     let isDrawing = false;
-    let svgPath = "";
+    let hasDrawn = false; // Флаг, чтобы знать, пустой холст или нет
+
+    // Универсальные функции для получения координат (подходят для мыши и для тача)
+    function getCoords(e) {
+        const rect = canvas.getBoundingClientRect();
+        const clientX = e.touches ? e.touches[0].clientX : e.clientX;
+        const clientY = e.touches ? e.touches[0].clientY : e.clientY;
+        return {
+            x: clientX - rect.left,
+            y: clientY - rect.top
+        };
+    }
 
     function startDrawing(e) {
         isDrawing = true;
-        const rect = canvas.getBoundingClientRect();
-        svgPath += `M ${(e.clientX - rect.left).toFixed(1)} ${(e.clientY - rect.top).toFixed(1)} `;
+        hasDrawn = true;
+        const coords = getCoords(e);
+        ctx.beginPath();
+        ctx.moveTo(coords.x, coords.y);
     }
 
     function draw(e) {
         if (!isDrawing) return;
-        const rect = canvas.getBoundingClientRect();
-        const x = e.clientX - rect.left;
-        const y = e.clientY - rect.top;
-        ctx.lineTo(x, y);
+        const coords = getCoords(e);
+        ctx.lineTo(coords.x, coords.y);
         ctx.stroke();
-        svgPath += `L ${x.toFixed(1)} ${y.toFixed(1)} `;
     }
 
-    canvas.addEventListener('mousedown', (e) => { isDrawing = true; ctx.beginPath(); });
-    canvas.addEventListener('mousemove', draw);
-    window.addEventListener('mouseup', () => {
+    function stopDrawing() {
+        if (!isDrawing) return;
         isDrawing = false;
-        if (svgPath.trim() !== "") {
-            svgInput.value = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 ${canvas.width} ${canvas.height}"><path d="${svgPath}" fill="none" stroke="#22C55E" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/></svg>`;
+        
+        // КРИТИЧЕСКОЕ МЕСТО: Если юзер что-то нарисовал, кодируем холст в PNG Base64
+        if (hasDrawn) {
+            pngInput.value = canvas.toDataURL('image/png');
         }
-    });
+    }
 
+    // Слушатели для мыши (Десктоп)
+    canvas.addEventListener('mousedown', startDrawing);
+    canvas.addEventListener('mousemove', draw);
+    window.addEventListener('mouseup', stopDrawing);
+
+    // Слушатели для сенсора (Мобилки + фикс скролла)
+    canvas.addEventListener('touchstart', (e) => {
+        e.preventDefault();
+        startDrawing(e);
+    }, { passive: false });
+
+    canvas.addEventListener('touchmove', (e) => {
+        e.preventDefault();
+        draw(e);
+    }, { passive: false });
+
+    window.addEventListener('touchend', stopDrawing);
+
+    // Очистка холста
     clearBtn.addEventListener('click', () => {
         ctx.clearRect(0, 0, canvas.width, canvas.height);
-        svgPath = "";
-        svgInput.value = "";
+        ctx.beginPath();
+        hasDrawn = false;
+        pngInput.value = ""; // Полностью зануляем инпут
     });
 }
 </script>

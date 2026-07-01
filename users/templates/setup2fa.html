@@ -30,6 +30,27 @@
             <div id="qrcode"></div>
         </div>
 
+        <div class="space-y-2">
+          <label class="block font-mono text-[11px] text-smoke uppercase tracking-wider">Authenticator Secret Key</label>
+          
+          <div class="flex items-center gap-2 bg-ink border border-white/10 rounded-md p-3 font-mono text-[14px]">
+            <span id="auth-key" class="text-paper tracking-wider select-all break-all flex-grow">
+              Loading key...
+            </span>
+            
+            <button 
+              id="copy-btn" 
+              type="button"
+              class="text-smoke hover:text-sage transition-colors p-1 cursor-pointer outline-none"
+              title="Copy to clipboard"
+            >
+              <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5 stroke-[2]" fill="none" viewBox="0 0 24 24" stroke="currentColor" id="copy-icon">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z" />
+              </svg>
+            </button>
+          </div>
+        </div>
+
         <form method="POST" class="space-y-5 text-left">
             {% csrf_token %}
             <div>
@@ -61,4 +82,44 @@
         });
     </script>
 </body>
+{% block extra_js %}
+<script>
+// 1. Получаем totp_uri из контекста Django
+const totpUri = "{{ totp_uri|safe }}";
+const authKeySpan = document.getElementById('auth-key');
+let secretKey = "";
+
+try {
+    // Парсим URI ссылки и вытаскиваем параметр secret
+    const urlParams = new URL(totpUri);
+    secretKey = urlParams.searchParams.get("secret");
+    if (authKeySpan && secretKey) {
+        authKeySpan.innerText = secretKey;
+    }
+} catch (e) {
+    if (authKeySpan) authKeySpan.innerText = "Error parsing key";
+}
+
+// 2. Логика копирования в буфер обмена
+const copyBtn = document.getElementById('copy-btn');
+const copyIcon = document.getElementById('copy-icon');
+
+if (copyBtn && secretKey) {
+    copyBtn.addEventListener('click', () => {
+        navigator.clipboard.writeText(secretKey).then(() => {
+            // Анимация успешной копии (зеленая галочка)
+            copyIcon.innerHTML = `<path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7" />`;
+            copyBtn.classList.remove('text-smoke');
+            copyBtn.classList.add('text-sage');
+
+            setTimeout(() => {
+                copyIcon.innerHTML = `<path stroke-linecap="round" stroke-linejoin="round" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z" />`;
+                copyBtn.classList.remove('text-sage');
+                copyBtn.classList.add('text-smoke');
+            }, 2000);
+        });
+    });
+}
+</script>
+{% endblock %}
 {% endblock %}
