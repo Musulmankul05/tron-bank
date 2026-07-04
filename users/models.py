@@ -1,6 +1,5 @@
 from django.db import models
 from django.contrib.auth.models import AbstractUser
-from django_countries.fields import CountryField
 
 class UserModel(AbstractUser):
     STATUS = (
@@ -14,7 +13,7 @@ class UserModel(AbstractUser):
     is_phone_verified = models.BooleanField(default=False)
     date_birth = models.DateField(blank=True, null=True)
     totp_secret = models.CharField(max_length=32, blank=True, null=True)
-    country = CountryField(null=True, blank=True)
+    country = models.CharField(null=True, blank=True)
 
 class BackupCodesModel(models.Model):
     user = models.ForeignKey(UserModel, on_delete=models.CASCADE, related_name='backups')
