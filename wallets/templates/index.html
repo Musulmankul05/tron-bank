@@ -1,214 +1,197 @@
 {% extends 'base.html' %}
-    {% block styles %}
-    <style>
-    html { background: #0E1210; }
-    body { font-family: 'Inter', sans-serif; background: #0E1210; color: #F2F0EA; }
+
+{% block styles %}
+<style>
+    html { background-color: #050706; scroll-behavior: smooth; }
+    body { font-family: 'Inter', sans-serif; background-color: #050706; color: #E4E7E5; }
     
-    /* Thin scrollbar */
-    ::-webkit-scrollbar { width: 4px; }
-    ::-webkit-scrollbar-track { background: #0E1210; }
-    ::-webkit-scrollbar-thumb { background: #3D4A41; border-radius: 2px; }
+    /* Тонкий кастомный скроллбар */
+    ::-webkit-scrollbar { width: 3px; }
+    ::-webkit-scrollbar-track { background: #050706; }
+    ::-webkit-scrollbar-thumb { background: #1F2922; }
     
-    /* Subtle grid overlay on hero */
-    .grid-bg {
-        background-image:
-        linear-gradient(rgba(34,197,94,0.03) 1px, transparent 1px),
-        linear-gradient(90deg, rgba(34,197,94,0.03) 1px, transparent 1px);
-        background-size: 48px 48px;
+    /* Точечная сетка вместо линейной (выглядит чище и строже) */
+    .dot-matrix {
+        background-image: radial-gradient(rgba(34, 197, 94, 0.05) 1px, transparent 1px);
+        background-size: 24px 24px;
     }
+
+    /* Инпуты и кнопки без лишней размытости — только резкие контрастные рамки */
+    .tech-border { border-color: rgba(255, 255, 255, 0.04); }
+    .tech-border-hover:hover { border-color: rgba(34, 197, 94, 0.3); }
     
-    /* Card hover lift */
-    .feature-card {
-        transition: transform 0.2s ease, border-color 0.2s ease;
-        will-change: transform;
+    /* Анимация сканирования для карточки */
+    @keyframes scan {
+        0% { top: -100%; }
+        100% { top: 200%; }
     }
-    .feature-card:hover {
-        transform: translateY(-3px);
-        border-color: rgba(34,197,94,0.35) !important;
+    .card-scan::after {
+        content: '';
+        position: absolute;
+        width: 100%;
+        height: 40%;
+        background: linear-gradient(to bottom, transparent, rgba(34,197,94,0.03), transparent);
+        animation: scan 4s linear infinite;
     }
-    
-    /* Nav blur */
-    .nav-blur { backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px); }
-    
-    /* Green glow on CTA */
-    .cta-glow:hover {
-        box-shadow: 0 0 0 1px rgba(34,197,94,0.5), 0 4px 24px rgba(34,197,94,0.18);
-    }
-    
-    /* Divider */
-    .divider { border-color: rgba(255,255,255,0.06); }
-    </style>
-    {% endblock %}
+</style>
+{% endblock %}
 
 {% block content %}
 <body class="antialiased">
+<div class="min-h-screen flex flex-col justify-between selection:bg-sage/20 selection:text-sage">
 
-<nav class="fixed top-0 left-0 right-0 z-50 nav-blur border-b border-white/5 bg-ink/80">
-  <div class="max-w-5xl mx-auto px-6 h-16 flex items-center justify-between">
-    <a href="#" class="flex items-center gap-2.5 group">
-      <span class="w-7 h-7 rounded-md bg-sage flex items-center justify-center text-ink font-mono font-bold text-sm select-none">Ŧ</span>
-      <span class="font-display font-600 text-paper tracking-tight text-[15px]">tron<span class="text-sage">.</span></span>
-    </a>
+  <nav class="fixed top-0 left-0 right-0 z-50 border-b border-white/5 bg(#050706)/90 backdrop-blur-md">
+    <div class="max-w-6xl mx-auto px-4 sm:px-8 h-14 flex items-center justify-between">
+      
+      <a href="#" class="flex items-center gap-2 tracking-tight group">
+        <span class="w-5 h-5 bg-sage text-ink font-mono font-bold text-[11px] flex items-center justify-center rounded-[3px]">Ŧ</span>
+        <span class="font-display font-600 text-[14px] text-paper">tron<span class="text-sage font-bold">.</span>bank</span>
+      </a>
 
-    <div class="hidden sm:flex items-center gap-8">
-      <a href="#features" class="text-[13px] text-mist hover:text-paper transition-colors">Features</a>
-      <a href="#security" class="text-[13px] text-mist hover:text-paper transition-colors">Security</a>
-      <!--<a href="#about" class="text-[13px] text-mist hover:text-paper transition-colors">About Us</a>-->
-    </div>
-    <div class="flex items-center gap-5">
-        {% if user.is_authenticated %}
-        <a href="{% url 'wallets:account' %}" class="cta-glow text-[13px] font-display font-500 bg-sage text-ink px-4 py-2 rounded-md transition-all duration-200 hover:bg-sageD">
-            Account
-        </a>
-        <form action="{% url 'users:logout' %}" method="POST" class="inline">
-            {% csrf_token %}
-            <button type="submit" class="text-[13px] font-display font-500 border border-white/10 bg-transparent text-mist px-4 py-2 rounded-md transition-all duration-200 hover:border-red-900/40 hover:bg-red-950/20 hover:text-red-400 outline-none">
-                Logout
-            </button>
-        </form>
-        {% else %}
-        <a href="{% url 'users:login' %}" class="text-[13px] font-display font-500 border border-sage/30 text-sage px-4 py-2 rounded-md transition-all duration-200 hover:bg-sageD hover:text-ink">
-            Log in
-        </a>
-        <a href="{% url 'users:registration' %}" class="cta-glow text-[13px] font-display font-500 bg-sage text-ink px-4 py-2 rounded-md transition-all duration-200 hover:bg-sageD">
-            Open account
-        </a>
-        {% endif %}
-    </div>
-  </div>
-</nav>
-
-<section class="grid-bg min-h-[85vh] pt-16 flex items-center">
-  <div class="max-w-5xl mx-auto px-6 py-20 w-full text-center md:text-left">
-    <div class="grid grid-cols-1 md:grid-cols-5 gap-12 items-center">
-
-      <div class="md:col-span-3">
-        <div class="inline-flex items-center gap-2 border border-sage/20 bg-sage/5 rounded-full px-3 py-1 mb-6">
-          <span class="w-1.5 h-1.5 rounded-full bg-sage animate-pulse"></span>
-          <span class="font-mono text-[11px] text-sage tracking-widest uppercase">Next-Gen Neobank</span>
-        </div>
-
-        <h1 class="font-display text-[clamp(2.5rem,5vw,3.8rem)] font-700 leading-[1.1] tracking-[-0.03em] text-paper mb-6">
-          Money that moves<br/>
-          <span class="text-sage">as fast as you do.</span>
-        </h1>
-
-        <p class="text-mist text-[15px] leading-relaxed max-w-md mb-8 font-body font-300 mx-auto md:mx-0">
-          A minimalist digital wallet designed for instant transfers. Manage KGS, EUR, and USD seamlessly with zero fat, zero friction, and real-time security.
-        </p>
-
-        <div class="flex flex-wrap items-center justify-center md:justify-start gap-4">
-          <a href="{% url 'users:registration' %}" class="cta-glow font-display font-600 text-[14px] bg-sage text-ink px-6 py-3 rounded-md transition-all duration-200 hover:bg-sageD">
-            Get your account for free
-          </a>
-        </div>
+      <div class="hidden md:flex items-center gap-10 font-mono text-[11px] uppercase tracking-wider">
+        <a href="#features" class="text-smoke hover:text-paper transition-colors duration-150">// core_features</a>
+        <a href="#security" class="text-smoke hover:text-paper transition-colors duration-150">// security_node</a>
       </div>
 
-      <div class="md:col-span-2 flex justify-center">
-        <div class="w-full max-w-[320px] aspect-[1.586/1] bg-gradient-to-br from-zinc-900 to-black border border-white/10 rounded-xl p-5 flex flex-col justify-between shadow-2xl relative overflow-hidden group hover:border-sage/30 transition-colors duration-300">
-          <div class="absolute top-0 right-0 w-24 h-24 bg-sage/5 rounded-full blur-2xl pointer-events-none"></div>
-          
-          <div class="flex justify-between items-start">
-            <span class="font-display font-bold text-sm tracking-tight text-paper">tron<span class="text-sage">.</span></span>
-            <span class="text-[10px] font-mono text-smoke tracking-widest">DIGITAL</span>
+      <div class="flex items-center gap-4 font-mono text-[12px]">
+        {% if user.is_authenticated %}
+          <a href="{% url 'wallets:account' %}" class="text-sage border border-sage/20 px-3 py-1.5 rounded-[4px] hover:bg-sage/5 transition-all">
+            Account
+          </a>
+          <form action="{% url 'users:logout' %}" method="POST" class="inline">
+            {% csrf_token %}
+            <button type="submit" class="text-smoke hover:text-red-400 transition-colors cursor-pointer outline-none">
+              Logout
+            </button>
+          </form>
+        {% else %}
+          <a href="{% url 'users:login' %}" class="text-smoke font-sans hover:text-paper transition-colors">
+            Login
+          </a>
+          <a href="{% url 'users:registration' %}" class="bg-sage text-ink px-3 py-1.5 rounded-[4px] font-sans font-600 hover:bg-sageD transition-all">
+            Open Account
+          </a>
+        {% endif %}
+      </div>
+    </div>
+  </nav>
+
+  <section class="dot-matrix flex-grow flex items-center pt-24 pb-16 relative">
+    <div class="max-w-6xl mx-auto px-4 sm:px-8 w-full">
+      <div class="grid grid-cols-1 lg:grid-cols-12 gap-12 items-center">
+        
+        <div class="lg:col-span-7 text-center lg:text-left space-y-6">
+          <div class="inline-flex items-center gap-2 border border-white/5 bg-white/[0.01] px-3 py-1 rounded">
+            <span class="w-1 h-1 rounded-full bg-sage animate-ping"></span>
+            <span class="font-mono text-[10px] text-smoke tracking-widest uppercase">System protocol</span>
           </div>
-          
-          <div>
-            <p class="font-mono text-sm tracking-widest text-paper mb-3">••••  ••••  ••••  4002</p>
-            <div class="flex justify-between items-end">
-              <div>
-                <p class="text-[8px] font-mono text-smoke uppercase tracking-wider">Holder</p>
-                <p class="text-[11px] font-mono text-paper tracking-wide">I. RICH</p>
+
+          <h1 class="font-display text-[clamp(2rem,6vw,3.5rem)] font-700 leading-[1.05] tracking-[-0.03em] text-paper">
+            High-speed liquidity.<br class="hidden sm:inline"/>
+            <span class="text-transparent bg-clip-text bg-gradient-to-r from-sage via-emerald-400 to-emerald-600">Zero administrative friction.</span>
+          </h1>
+
+          <p class="text-smoke text-[14px] sm:text-[15px] leading-relaxed max-w-lg mx-auto lg:mx-0 font-300">
+            A brutalist digital vault architecture. Trade, convert, and secure asset nodes natively in KGS, EUR, and USD. No intermediaries, no visual noise.
+          </p>
+
+          <div class="pt-2 flex flex-col sm:flex-row items-center justify-center lg:justify-start gap-4">
+            <a href="{% url 'users:registration' %}" class="w-full sm:w-auto text-center font-sans font-600 text-[14px] bg-sage text-ink px-6 py-3 rounded-[4px] hover:bg-sageD shadow-lg shadow-sage/5 transition-all cursor-pointer">
+              Initialize Free Node
+            </a>
+          </div>
+        </div>
+
+        <div class="lg:col-span-5 flex justify-center lg:justify-end">
+          <div class="w-full max-w-[340px] aspect-[1.586/1] bg-[#0A0D0B] border border-white/10 rounded-lg p-6 flex flex-col justify-between shadow-2xl relative overflow-hidden card-scan select-none">
+            <div class="flex justify-between items-start z-10">
+              <span class="font-mono text-[12px] tracking-tighter text-paper/40">tron.</span>
+              <span class="text-[9px] font-mono bg-white/5 text-smoke px-1.5 py-0.5 rounded tracking-widest">SECURE</span>
+            </div>
+            
+            <div class="z-10 space-y-4">
+              <p class="font-mono text-[15px] tracking-[0.2em] text-paper">••••  ••••  ••••  4002</p>
+              <div class="flex justify-between items-end">
+                <div>
+                  <p class="text-[7px] font-mono text-smoke/50 uppercase tracking-wider">Node Holder</p>
+                  <p class="text-[12px] font-mono text-paper tracking-wide uppercase">I. RICH</p>
+                </div>
+                <div class="flex gap-1">
+                  <div class="w-3 h-5 bg-white/10 rounded-sm"></div>
+                  <div class="w-4 h-5 bg-sage/40 rounded-sm"></div>
+                </div>
               </div>
-              <div class="w-6 h-4 bg-white/10 rounded-sm"></div>
             </div>
           </div>
         </div>
-      </div>
 
+      </div>
     </div>
-  </div>
-</section>
+  </section>
 
-<section id="features" class="py-20 border-t divider bg-ink/40">
-  <div class="max-w-5xl mx-auto px-6">
+  <section id="features" class="py-20 border-t border-white/5 bg-[#030504]">
+    <div class="max-w-6xl mx-auto px-4 sm:px-8">
+      
+      <div class="mb-16 flex flex-col md:flex-row md:items-end justify-between gap-4">
+        <div>
+          <span class="font-mono text-[10px] text-sage tracking-widest uppercase">Core Capabilities</span>
+          <h2 class="font-display font-600 text-[24px] sm:text-[28px] text-paper mt-1 tracking-tight"> Engineered for absolute clarity. </h2>
+        </div>
+      </div>
 
-    <div class="mb-12 text-center md:text-left">
-      <span class="font-mono text-[11px] text-sage tracking-widest uppercase">Core Experience</span>
-      <h2 class="font-display font-700 text-[2rem] text-paper mt-2 tracking-tight">
-        Simplicity in every transaction.
-      </h2>
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-px bg-white/5 border border-white/5 rounded overflow-hidden">
+        
+        <div class="bg-[#050706] p-8 space-y-4 hover:bg-[#070a08] transition-colors duration-200">
+          <div class="font-mono text-[11px] text-sage">1</div>
+          <h3 class="font-sans font-600 text-paper text-[16px]">Multi-Currency Matrix</h3>
+          <p class="text-smoke text-[13px] leading-relaxed font-300">Isolated ledger balances for local and global values. Instant atomic currency swaps natively inside the runtime environment.</p>
+        </div>
+
+        <div class="bg-[#050706] p-8 space-y-4 hover:bg-[#070a08] transition-colors duration-200">
+          <div class="font-mono text-[11px] text-sage">2</div>
+          <h3 class="font-sans font-600 text-paper text-[16px]">Zero-Delay Pipeline</h3>
+          <p class="text-smoke text-[13px] leading-relaxed font-300">Push assets to any node or phone identifier inside Central Asia ecosystem. Zero network overhead, zero delayed validations.</p>
+        </div>
+
+        <div class="bg-[#050706] p-8 space-y-4 hover:bg-[#070a08] transition-colors duration-200">
+          <div class="font-mono text-[11px] text-sage">3</div>
+          <h3 class="font-sans font-600 text-paper text-[16px]">Encrypted KYC Gateway</h3>
+          <p class="text-smoke text-[13px] leading-relaxed font-300">Isolated identity compilation pipeline. Pass validation parameters in minutes to increase system execution limits.</p>
+        </div>
+
+      </div>
     </div>
+  </section>
 
-    <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
-
-      <div class="feature-card bg-inkL border border-white/30 rounded-xl p-6">
-        <div class="w-9 h-9 rounded-lg bg-sage/10 border border-sage/15 flex items-center justify-center mb-4 text-sage">
-          <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="20" height="14" x="2" y="5" rx="2"/><path d="M2 10h20"/></svg>
-        </div>
-        <h3 class="font-display font-600 text-paper text-[15px] mb-2">Multi-Currency Wallets</h3>
-        <p class="text-mist text-[13px] leading-relaxed font-300">Keep separate balances for KGS, KZT, and USD. Convert currencies instantly within your dashboard.</p>
-      </div>
-
-      <div class="feature-card bg-inkL border border-white/30 rounded-xl p-6">
-        <div class="w-9 h-9 rounded-lg bg-sage/10 border border-sage/15 flex items-center justify-center mb-4 text-sage">
-          <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m5 12 7-7 7 7"/><path d="M12 19V5"/></svg>
-        </div>
-        <h3 class="font-display font-600 text-paper text-[15px] mb-2">Instant Transfers</h3>
-        <p class="text-mist text-[13px] leading-relaxed font-300">Send money to any phone number or account number across Central Asia without delays or hidden fees.</p>
-      </div>
-
-      <div class="feature-card bg-inkL border border-white/30 rounded-xl p-6">
-        <div class="w-9 h-9 rounded-lg bg-sage/10 border border-sage/15 flex items-center justify-center mb-4 text-sage">
-          <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10"/></svg>
-        </div>
-        <h3 class="font-display font-600 text-paper text-[15px] mb-2">Seamless KYC Flow</h3>
-        <p class="text-mist text-[13px] leading-relaxed font-300">Verify your account securely in minutes to unlock higher limits and premium banking options.</p>
-      </div>
-
-    </div>
-  </div>
-</section>
-
-<section id="security" class="py-20 border-t divider bg-inkL">
-  <div class="max-w-5xl mx-auto px-6">
-    <div class="max-w-2xl mx-auto text-center">
-      <span class="font-mono text-[11px] text-sage tracking-widest uppercase">Security</span>
-      <h2 class="font-display font-700 text-[2rem] text-paper mt-3 mb-4 tracking-tight">
-        Rock-solid backend protection.
-      </h2>
-      <p class="text-mist text-[14px] leading-relaxed font-300 mb-8">
-        No modifications, no tamperable databases. Built on an append-only transaction ledger utilizing absolute transaction atomicity to ensure your balances stay accurate and secure.
+  <section id="security" class="py-24 border-t border-white/5 bg-[#050706] relative overflow-hidden">
+    <div class="max-w-4xl mx-auto px-4 sm:px-8 text-center space-y-8 relative z-10">
+      <span class="font-mono text-[10px] text-sage tracking-widest uppercase">Security Manifest</span>
+      
+      <h2 class="font-display font-600 text-[26px] sm:text-[32px] text-paper tracking-tight max-w-xl mx-auto leading-tight"> Immutable data layers.<br/> Non-tamperable architecture. </h2>
+      
+      <p class="text-smoke text-[14px] leading-relaxed font-300 max-w-2xl mx-auto">
+        Built entirely on top of an append-only transaction stream. Every state transition utilizes absolute database atomicity, preventing balance collision and securing sensitive cryptographic payloads.
       </p>
-      <div class="inline-flex flex-wrap items-center justify-center gap-6 text-left max-w-md mx-auto">
-        <div class="flex items-center gap-2.5">
-          <svg class="w-4 h-4 text-sage flex-shrink-0" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 6 9 17l-5-5"/></svg>
-          <span class="text-paper/80 text-[13px] font-mono">Atomic transfers</span>
-        </div>
-        <div class="flex items-center gap-2.5">
-          <svg class="w-4 h-4 text-sage flex-shrink-0" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 6 9 17l-5-5"/></svg>
-          <span class="text-paper/80 text-[13px] font-mono">Encrypted payloads</span>
-        </div>
-        <div class="flex items-center gap-2.5">
-          <svg class="w-4 h-4 text-sage flex-shrink-0" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 6 9 17l-5-5"/></svg>
-          <span class="text-paper/80 text-[13px] font-mono">Protected KYC URLs</span>
-        </div>
+      
+      <div class="pt-4 grid grid-cols-1 sm:grid-cols-3 gap-4 max-w-xl mx-auto font-mono text-[11px]">
+        <div class="border border-white/5 bg-white/[0.01] py-3 rounded text-paper/70 tracking-wide">// ATOMIC_TRANSFERS</div>
+        <div class="border border-white/5 bg-white/[0.01] py-3 rounded text-paper/70 tracking-wide">// CIPHER_PAYLOADS</div>
+        <div class="border border-white/5 bg-white/[0.01] py-3 rounded text-paper/70 tracking-wide">// PROTECTED_ROUTING</div>
       </div>
     </div>
-  </div>
-</section>
+  </section>
 
-<footer class="border-t divider py-10 bg-ink">
-  <div class="max-w-5xl mx-auto px-6 flex flex-col sm:flex-row items-center justify-between gap-4">
-    <div class="flex items-center gap-2">
-      <span class="w-9 h-9 rounded-lg bg-sage flex items-center justify-center text-ink font-mono font-bold text-[18px]">Ŧ</span>
-      <span class="font-display font-500 text-paper/60 text-[16px]">tron.</span>
+  <footer class="border-t border-white/5 py-8 bg-[#020302]">
+    <div class="max-w-6xl mx-auto px-4 sm:px-8 flex flex-col sm:flex-row items-center justify-between gap-4 font-mono text-[11px] text-smoke">
+      <div class="flex items-center gap-2">
+        <span class="text-paper font-bold tracking-tight">tron<span class="text-sage">.</span>bank</span>
+      </div>
+      <div>
+        <span>Musulmankul · MIT License</span>
+      </div>
     </div>
-    <div class="flex items-center gap-6 text-[14px] text-smoke">
-      <span class="font-mono">By Musulmankul · MIT License</span>
-    </div>
-  </div>
-</footer>
+  </footer>
 
+</div>
 </body>
 {% endblock %}
