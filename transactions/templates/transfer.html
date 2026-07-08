@@ -1,0 +1,86 @@
+{% extends 'base.html' %}
+
+{% block title %}Transfer Assets | tron.bank{% endblock %}
+{% block styles %}
+<style>
+html { background: #0E1210; }
+
+/* Thin scrollbar */
+::-webkit-scrollbar { width: 4px; }
+::-webkit-scrollbar-track { background: #0E1210; }
+::-webkit-scrollbar-thumb { background: #3D4A41; border-radius: 2px; }
+    .card-gradient {
+        background: linear-gradient(135deg, rgba(34,197,94,0.1) 0%, rgba(14,18,16,1) 100%);
+    }
+    .nav-blur { backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px); }
+    .ledger-row:hover {
+        background-color: rgba(255, 255, 255, 0.02);
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="w-full max-w-6xl mx-auto px-6 py-8">
+    <div class="flex mt-16 justify-center items-center">
+        
+        <section class="w-full max-w-[500px] space-y-6">
+            <div class="flex items-center justify-between">
+                <h2 class="font-display font-500 text-[20px] text-paper tracking-tight">Transfer Assets</h2>
+                <a href="javascript:history.back()" class="font-mono text-[12px] text-smoke hover:text-sage transition-colors"><- [ Back ]</a>
+            </div>
+
+            <div class="card-gradient border border-white/10 rounded-xl p-8 relative overflow-hidden group transition-all duration-300 hover:border-sage/30">
+                {% if success %}
+                <div class="font-mono text-[16px] text-green-500 bg-green-500/10 border border-green-500/20 rounded p-2.5 mb-4">{{ success }}</div>
+                {% elif error %}
+                <div class="font-mono text-[16px] text-red-500 bg-red-500/10 border border-red-500/20 rounded p-2.5 mb-4">{{ error }}</div>
+                {% endif %}
+                <div class="absolute top-0 right-0 w-64 h-64 bg-sage/5 rounded-full blur-3xl pointer-events-none"></div>
+                
+                <form method="POST" action="{% url 'transactions:transfer' %}" class="relative z-10 space-y-6">
+                    {% csrf_token %}
+                    <div class="space-y-1.5">
+                        <label class="block font-mono text-[13px] text-mist uppercase tracking-widest">Target (Username / Phone)</label>
+                        <input type="text" name="receiver" required placeholder="@username or +996..." class="w-full bg-[#0E1210] border border-white/10 rounded-md px-4 py-3 text-[15px] text-paper placeholder:text-smoke/40 font-mono focus:outline-none focus:border-sage transition-colors" />
+                    </div>
+                    
+                    <div class="space-y-1.5">
+                        <label class="block font-mono text-[13px] text-mist uppercase tracking-widest">Source Node</label>
+                        <div class="relative">
+                            <select name="card" required class="w-full bg-[#0E1210] border border-white/10 rounded-md px-4 py-3 text-paper font-mono text-[14px] hover:border-white/20 focus:outline-none focus:border-sage transition-colors appearance-none cursor-pointer">
+                                {% for card in cards %}
+                                    <option value="{{ card.id }}">{{ card.name|default:"Main Node" }} — {{ card.balance|floatformat:2 }} {{ card.currency }}</option>
+                                {% endfor %}
+                            </select>
+                            <div class="absolute inset-y-0 right-0 flex items-center px-4 pointer-events-none text-smoke">
+                                <span class="font-mono text-[10px]">▼</span>
+                            </div>
+                        </div>
+                    </div>
+
+
+                    <div class="space-y-1.5">
+                        <div class="flex justify-between items-end">
+                            <label class="block font-mono text-[13px] text-mist uppercase tracking-widest">Amount</label>
+                        </div>
+                        <div class="relative">
+                            <input type="number" step="0.01" min="1" name="amount" required placeholder="0.00" class="w-full bg-[#0E1210] border border-white/10 rounded-md px-4 py-3 text-[18px] text-paper placeholder:text-smoke/30 font-mono focus:outline-none focus:border-sage transition-colors" />
+                            <div class="absolute inset-y-0 right-0 flex items-center px-4 pointer-events-none text-smoke">
+                                <span class="font-mono text-[12px]">KGS</span>
+                            </div>
+                        </div>
+                        <p class="font-mono text-[10px] text-smoke text-right mt-1">* Network fee: 1% will be added</p>
+                    </div>
+
+                    <div class="pt-4 border-t border-white/5">
+                        <button type="submit" class="w-full text-center bg-sage hover:bg-sage/90 text-[#0E1210] font-display font-600 text-[15px] py-3.5 rounded-md transition-all">
+                            Execute Transfer
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </section>
+
+    </div>
+</div>
+{% endblock %}

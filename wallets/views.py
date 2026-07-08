@@ -1,9 +1,12 @@
 from cryptography.fernet import Fernet
 from django.conf import settings
 from django.shortcuts import redirect, render
+from django.contrib.auth.mixins import LoginRequiredMixin
 from django.views import View
+import pyotp
 
 from users.models import KYCModel
+from wallets.models import CardModel
 
 # Create your views here.
 class IndexView(View):
@@ -12,11 +15,32 @@ class IndexView(View):
             return redirect('users:setup2fa')
         return render(request, 'index.html')
 
-class AccountView(View):
+class AccountView(LoginRequiredMixin, View):
     def get(self, request):
-        return render(request, 'account.html')
+        context = {
+            'cards': CardModel.objects.filter(owner=request.user)
+        }
+        return render(request, 'account.html', context=context)
 
-class ReceiptView(View):
+class NewCardView(LoginRequiredMixin, View):
+    def get(self, request):
+        return render(request, 'create.html')
+
+    def post(self, request):
+        name = request.POST.get('name')
+        currency = request.POST.get('currency')
+        user_2fa = request.POST.get('otp_code')
+        totp = pyotp.TOTP(request.user.totp_secret)
+
+        if not user_2fa:
+            return render(request, 'create.html', {'error': '2FA is required'})
+        if totp.verify(user_2fa):
+            CardModel.objects.create(owner=request.user, name=name, currency=currency)
+            return redirect('wallets:account')
+        else:
+            return render(request, 'create.html', {'error': 'Invalid 2FA code'})
+
+class ReceiptView(LoginRequiredMixin, View):
     def get(self, request):
         try:
             kyc = KYCModel.objects.get(user=request.user)
@@ -42,4 +66,6 @@ class ReceiptView(View):
             'signature_base64': decrypted_signature
         }
         return render(request, 'receipt.html', context)
-                
+
+
+        

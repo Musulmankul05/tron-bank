@@ -22,6 +22,7 @@ urlpatterns = [
     path('admin/', admin.site.urls),
     path('', include('wallets.urls', namespace='wallets')),
     path('', include('users.urls', namespace='users')),
+    path('transactions/', include('transactions.urls', namespace='transactions')),
 ]
 
 if settings.DEBUG:

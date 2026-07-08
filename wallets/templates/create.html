@@ -1,0 +1,91 @@
+{% extends 'base.html' %}
+
+{% block title %}Open New Node | tron.bank{% endblock %}
+
+{% block styles %}
+<style>
+    html { background: #0E1210; }
+    body { font-family: 'Inter', sans-serif; background: #0E1210; color: #F2F0EA; }
+
+    /* Thin scrollbar */
+    ::-webkit-scrollbar { width: 4px; }
+    ::-webkit-scrollbar-track { background: #0E1210; }
+    ::-webkit-scrollbar-thumb { background: #3D4A41; border-radius: 2px; }
+    
+    .card-gradient {
+        background: linear-gradient(135deg, rgba(34,197,94,0.05) 0%, rgba(14,18,16,1) 100%);
+    }
+    .nav-blur { backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px); }
+    
+    /* Стилизация селекта, чтобы убрать дефолтные белые фоны браузера */
+    select option { background: #0E1210; color: #F2F0EA; }
+</style>
+{% endblock %}
+
+{% block content %}
+<body class="antialiased grid-bg min-h-screen flex flex-col justify-between">
+    <nav class="fixed top-0 left-0 right-0 z-50 nav-blur border-b border-white/5 bg-ink/80">
+      <div class="max-w-5xl mx-auto px-6 h-16 flex items-center justify-between">
+        <span class="flex items-center gap-2.5 group cursor-pointer" onclick="window.location.href='/'">
+          <span class="w-7 h-7 rounded-md bg-sage flex items-center justify-center text-ink font-mono font-bold text-sm select-none">Ŧ</span>
+          <span class="font-display font-600 text-paper tracking-tight text-[15px]">tron<span class="text-sage">.</span></span>
+        </span>
+      </div>
+    </nav>
+
+    <div class="w-full max-w-6xl mx-auto px-6 py-8 space-y-10">
+        <div class="flex mt-16 justify-center items-center">
+            {% if error %}
+            <div class="font-mono text-[15px] text-red-500 bg-red-500/10 border border-red-500/20 rounded-md p-2.5 mb-4 text-left">
+                {{ error }}
+            </div>
+            {% endif %}
+            
+            <section class="w-full max-w-[500px] space-y-6">
+                <div class="flex items-center justify-between">
+                    <h2 class="font-display font-500 text-[20px] text-paper tracking-tight">Initialize Node</h2>
+                </div>
+            
+                <div class="card-gradient border border-white/10 rounded-xl p-8 relative overflow-hidden group transition-all duration-300 hover:border-sage/30">
+                    <div class="absolute top-0 right-0 w-64 h-64 bg-sage/5 rounded-full blur-3xl pointer-events-none"></div>
+                    
+                    <form method="POST" action="{% url 'wallets:create' %}" class="relative z-10 space-y-6">
+                        {% csrf_token %}
+                        
+                        <div class="space-y-1.5">
+                            <label class="block font-mono text-[13px] text-mist uppercase tracking-widest">Card Name</label>
+                            <input type="text" name="name" required placeholder="Main Node" class="w-full bg-[#0E1210] border border-white/10 rounded-md px-4 py-3 text-[15px] text-paper placeholder:text-smoke/40 font-mono focus:outline-none focus:border-sage transition-colors" />
+                        </div>
+            
+                        <div class="space-y-1.5">
+                            <label class="block font-mono text-[13px] text-mist uppercase tracking-widest">Select Base Asset</label>
+                            <div class="relative">
+                                <select name="currency" class="w-full bg-[#0E1210] border border-white/10 rounded-md px-4 py-3 text-paper font-mono text-[14px] hover:border-white/20 focus:outline-none focus:border-sage transition-colors appearance-none cursor-pointer">
+                                    <option value="KGS">KGS — Kyrgyz Som</option>
+                                    <option value="USD">USD — US Dollar</option>
+                                    <option value="EUR">EUR — Euro</option>
+                                </select>
+                                <div class="absolute inset-y-0 right-0 flex items-center px-4 pointer-events-none text-smoke">
+                                    <span class="font-mono text-[10px]">▼</span>
+                                </div>
+                            </div>
+                        </div>
+            
+                        <div class="space-y-1.5">
+                            <label for="otp_code" class="block font-mono text-[13px] text-mist uppercase tracking-widest">Enter 6-Digit Code</label>
+                            <input type="text" id="otp_code" name="otp_code" maxlength="6" required placeholder="000000" class="w-full bg-[#0E1210] border border-white/10 rounded-md px-4 py-3 text-[18px] text-paper placeholder:text-smoke/30 font-mono tracking-[0.4em] text-center focus:outline-none focus:border-sage transition-colors" />
+                        </div>
+            
+                        <div class="pt-4">
+                            <button type="submit" class="w-full text-center bg-sage hover:bg-sage/90 text-[#0E1210] font-display font-600 text-[15px] py-3.5 rounded-md transition-all">
+                                Deploy Node
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </section>
+
+        </div>
+    </div>
+</body>
+{% endblock %}
